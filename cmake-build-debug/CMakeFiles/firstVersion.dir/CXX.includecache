@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/main.cpp
+iostream
+-
+vector
+-
+cmath
+-
+unistd.h
+-
+SFML/Graphics.hpp
+/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/SFML/Graphics.hpp
+fstream
+-
+

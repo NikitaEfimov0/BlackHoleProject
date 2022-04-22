@@ -1,0 +1,3 @@
+/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug/CMakeFiles/firstVersion.dir

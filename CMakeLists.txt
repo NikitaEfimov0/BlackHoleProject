@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.19)
+project(firstVersion)
+
+set(CMAKE_CXX_STANDARD 20)
+find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
+link_directories(GL)
+add_executable(firstVersion main.cpp)
+target_link_libraries(firstVersion  PRIVATE sfml-graphics)
