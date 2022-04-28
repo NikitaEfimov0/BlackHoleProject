@@ -331,7 +331,7 @@ int main(){
         RK4(system);
 
         i += 1;
-        if (i % 500==0) {
+        if (i % 500==0 && i!=0) {
             lifeCycle--;
             interp->addS2Data(system[0], i, 2);
             interp->addS2Data(system[1], i, 38);
