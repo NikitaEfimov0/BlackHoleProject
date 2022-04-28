@@ -331,12 +331,11 @@ int main(){
         RK4(system);
 
         i += 1;
-        if (i == 500) {
+        if (i % 500==0) {
             lifeCycle--;
             interp->addS2Data(system[0], i, 2);
             interp->addS2Data(system[1], i, 38);
             interp->addS2Data(system[2], i, 55);
-            i = 0;
         }
         if (lifeCycle == 0){
             interp->cleanLast();
