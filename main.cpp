@@ -67,8 +67,6 @@ void derivative(std::vector<double>X, std::vector<double>&Xdot){
     Xdot[15] =- X[12]*((mBlackHole)/(pow(norm(X[12], X[13], X[14], 0, 0, 0), 3)));
     Xdot[16] =- X[13]*((mBlackHole)/(pow(norm(X[12], X[13], X[14], 0, 0, 0), 3)));
     Xdot[17] =- X[14]*((mBlackHole)/(pow(norm(X[12], X[13], X[14], 0, 0, 0), 3)));
-
-
 }
 
 void set_tmp(std::vector<double>&tmp, std::vector<double>state, std::vector<double>k, double h)
@@ -166,6 +164,7 @@ public:
         for(int i = 0; i < obj.size(); i++){
             stObjects.push_back(new sf::CircleShape());
             stObjects[i]->setRadius(100);
+            stObjects[i]->setOrigin(stObjects[i]->getRadius()/2, stObjects[i]->getRadius()/2);
             stObjects[i]->setPosition(obj[i]->returnX(), obj[i]->returnY());
             stObjects[i]->setFillColor(sf::Color::White);
             sf::Color orbColor(100*i, 255, 50*i);
@@ -198,11 +197,47 @@ public:
 
 
 class StarStateInterpolator{
-    std::ofstream toFile;
-    std::ifstream fromFile;
+    std::ofstream toFileS2;
+    std::ofstream toFileS38;
+    std::ofstream toFileS55;
+    std::ifstream fromFileS2;
+    std::ifstream fromFileS38;
+    std::ifstream fromFileS55;
+
+    int howMuchSpaces(std::string string){
+        int counter = 0;
+        for(int i = 0; i < string.length(); i++){
+            if(string[i] == ' ' || string[i]=='\t' || string[i] == '\n'){
+                counter++;
+            }
+        }
+        return counter;
+    }
+
+    void clean(std::ofstream& toF, std::ifstream& fromF, std::string path){
+        std::string tmp;
+        std::string result;
+        const char del = '\0';
+        while(!fromF.eof()){
+            getline(fromF, tmp, del);
+            if(howMuchSpaces(tmp)!=4){
+                continue;
+            }
+            else{
+                result.append(tmp);
+            }
+        }
+        toF.close();
+        toF.open(path);
+        toF<<result;
+    }
+
 public:
     StarStateInterpolator(){
-        toFile.open("../Data/S2.dat");
+        toFileS2.open("../Data/S2.dat");
+        toFileS38.open("../Data/S38.dat");
+        toFileS55.open("../Data/S55.dat");
+
     }
 
     std::vector<double> interpolation(int t1, int t2){
@@ -215,8 +250,54 @@ public:
         return coordinates;
     }
 
-    void addS2Data(StarObject* objects, int h){
-        toFile<<h<<" "<<objects->returnX()<<" "<<objects->returnY()<<" "<<objects->returnZ()<<"\n";
+
+    void cleanLast(){
+        fromFileS2.open("../Data/S2.dat");
+        fromFileS38.open("../Data/S38.dat");
+        fromFileS55.open("../Data/S55.dat");
+        clean(toFileS2, fromFileS2, "../Data/S2.dat");
+        clean(toFileS38, fromFileS38, "../Data/S38.dat");
+        clean(toFileS55, fromFileS55, "../Data/S55.dat");
+
+    }
+
+    void addS2Data(StarObject* objects, int h, int n){
+        switch (n) {
+            case 2:
+                toFileS2<<h;
+                toFileS2<<"\t";
+                toFileS2<<objects->returnX();
+                toFileS2<<" ";
+                toFileS2<<objects->returnY();
+                toFileS2<<" ";
+                toFileS2<<objects->returnZ();
+                toFileS2<<"\n"<<'\0';
+                break;
+            case 38:
+                toFileS38<<h;
+                toFileS38<<"\t";
+                toFileS38<<objects->returnX();
+                toFileS38<<" ";
+                toFileS38<<objects->returnY();
+                toFileS38<<" ";
+                toFileS38<<objects->returnZ();
+                toFileS38<<"\n"<<'\0';
+                break;
+            case 55:
+                toFileS55<<h;
+                toFileS55<<"\t";
+                toFileS55<<objects->returnX();
+                toFileS55<<" ";
+                toFileS55<<objects->returnY();
+                toFileS55<<" ";
+                toFileS55<<objects->returnZ();
+                toFileS55<<"\n"<<'\0';
+                break;
+            default:
+                break;
+
+        }
+
     }
 
 
@@ -234,11 +315,14 @@ int main(){
     view.setSize(38400-1920*12, 21600-1080*12);
     window.setView(view);
     int i = 0;
-    while (window.isOpen()){
-        interp->addS2Data(system[0], i);
+    int lifeCycle = 19;
+    while (window.isOpen()) {
+        interp->addS2Data(system[0], i, 2);
+        interp->addS2Data(system[1], i, 38);
+        interp->addS2Data(system[2], i, 55);
         sf::Event event;
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))window.close();
-        while (window.pollEvent(event)){
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))window.close();
+        while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)window.close();
         }
         window.clear();
@@ -246,10 +330,20 @@ int main(){
         window.display();
         RK4(system);
 
-        i+=1;
-//        interp->addS2Data(system[1], i);
+        i += 1;
+        if (i == 500) {
+            lifeCycle--;
+            interp->addS2Data(system[0], i, 2);
+            interp->addS2Data(system[1], i, 38);
+            interp->addS2Data(system[2], i, 55);
+            i = 0;
+        }
+        if (lifeCycle == 0){
+            interp->cleanLast();
+            return 0;
+        }
     }
 
-
+    interp->cleanLast();
     return 0;
 }
