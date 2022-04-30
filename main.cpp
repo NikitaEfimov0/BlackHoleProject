@@ -94,7 +94,7 @@ void updateStates(std::vector<StarObject*>&stellarObjects, std::vector<double>sy
 void RK4(std::vector<StarObject*>stellarObjects){
     std::vector<double>system;
     std::vector<double>mass;
-    double h = 1;
+    double h = 10;
     std::vector<double>tmp;
     for(int i = 0; i < stellarObjects.size(); i++){
         system.push_back(stellarObjects[i]->returnX());
@@ -124,10 +124,10 @@ void RK4(std::vector<StarObject*>stellarObjects){
         system[i]+=(h/6*(k1[i]+2*k2[i]+2*k3[i]+k4[i]));
     }
     updateStates(stellarObjects, system);
-    for(int i = 0; i < system.size(); i++){
-        std::cout<<system[i]<<"\t";
-    }
-    std::cout<<"\n";
+//    for(int i = 0; i < system.size(); i++){
+//        std::cout<<system[i]<<"\t";
+//    }
+//    std::cout<<"\n";
 
 
 }
@@ -176,7 +176,7 @@ public:
         if(cyclicVar==0){
             cyclicVar = 2000;
             for(int i = 0; i < orbits.size(); i++){
-                orbits[i].erase(orbits[i].begin(), orbits[i].begin()+500);
+                orbits[i].erase(orbits[i].begin(), orbits[i].begin()+2000);
             }
         }
         else{
@@ -315,7 +315,7 @@ int main(){
     view.setSize(38400-1920*12, 21600-1080*12);
     window.setView(view);
     int i = 0;
-    int lifeCycle = 19;
+    //int lifeCycle = 19;
     while (window.isOpen()) {
         interp->addS2Data(system[0], i, 2);
         interp->addS2Data(system[1], i, 38);
@@ -332,15 +332,15 @@ int main(){
 
         i += 1;
         if (i % 500==0 && i!=0) {
-            lifeCycle--;
+            //lifeCycle--;
             interp->addS2Data(system[0], i, 2);
             interp->addS2Data(system[1], i, 38);
             interp->addS2Data(system[2], i, 55);
         }
-        if (lifeCycle == 0){
-            interp->cleanLast();
-            return 0;
-        }
+//        if (lifeCycle == 0){
+//            interp->cleanLast();
+//            return 0;
+//        }
     }
 
     interp->cleanLast();
