@@ -142,6 +142,33 @@ firstVersion/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/firstVersion.dir/build.make CMakeFiles/firstVersion.dir/build
 .PHONY : firstVersion/fast
 
+MultMatrix/matrix.o: MultMatrix/matrix.cpp.o
+
+.PHONY : MultMatrix/matrix.o
+
+# target to build an object file
+MultMatrix/matrix.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/firstVersion.dir/build.make CMakeFiles/firstVersion.dir/MultMatrix/matrix.cpp.o
+.PHONY : MultMatrix/matrix.cpp.o
+
+MultMatrix/matrix.i: MultMatrix/matrix.cpp.i
+
+.PHONY : MultMatrix/matrix.i
+
+# target to preprocess a source file
+MultMatrix/matrix.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/firstVersion.dir/build.make CMakeFiles/firstVersion.dir/MultMatrix/matrix.cpp.i
+.PHONY : MultMatrix/matrix.cpp.i
+
+MultMatrix/matrix.s: MultMatrix/matrix.cpp.s
+
+.PHONY : MultMatrix/matrix.s
+
+# target to generate assembly for a file
+MultMatrix/matrix.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/firstVersion.dir/build.make CMakeFiles/firstVersion.dir/MultMatrix/matrix.cpp.s
+.PHONY : MultMatrix/matrix.cpp.s
+
 main.o: main.cpp.o
 
 .PHONY : main.o
@@ -178,6 +205,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... firstVersion"
+	@echo "... MultMatrix/matrix.o"
+	@echo "... MultMatrix/matrix.i"
+	@echo "... MultMatrix/matrix.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

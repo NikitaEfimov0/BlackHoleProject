@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/firstVersion.dir/MultMatrix/matrix.cpp.o"
   "CMakeFiles/firstVersion.dir/main.cpp.o"
   "firstVersion"
   "firstVersion.pdb"

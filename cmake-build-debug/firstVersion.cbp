@@ -82,6 +82,12 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/MultMatrix/matrix.cpp">
+			<Option target="firstVersion"/>
+		</Unit>
+		<Unit filename="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/MultMatrix/matrix.hpp">
+			<Option target="firstVersion"/>
+		</Unit>
 		<Unit filename="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/main.cpp">
 			<Option target="firstVersion"/>
 		</Unit>

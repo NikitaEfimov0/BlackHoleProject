@@ -4,9 +4,11 @@
 #include <unistd.h>
 #include "SFML/Graphics.hpp"
 #include <fstream>
+#include "MultMatrix/matrix.hpp"
 const double G = 0.01720209895;
 const double mBlackHole = G*G*4000000;
 const double PI = 4*atan(1.);
+double PointOfMid = 0;
 class StarObject{
     double x, y, z;
     double xDot, yDot, zDot;
@@ -132,18 +134,67 @@ void RK4(std::vector<StarObject*>stellarObjects){
 
 }
 
+void projection(StarObject* object ,double OMEGA, double i ){
+    Matrix R = Matrix({{object->returnX()},
+                            {object->returnY()},
+                            {object->returnZ()}});
+    Matrix V = Matrix({{object->returnXd()},
+                       {object->returnYd()},
+                       {object->returnZd()}});
+    Matrix A2 = Matrix(
+            {{cos(OMEGA+PointOfMid), -cos(i)* sin(OMEGA+PointOfMid), sin(i)* sin(OMEGA+PointOfMid)},
+             {sin(OMEGA+PointOfMid), cos(i)* cos(OMEGA+PointOfMid), -sin(i)* cos(OMEGA+PointOfMid)},
+             {0, sin(i), cos(i)}}
+            );
+
+    Matrix RESULT = A2*R;
+   // RESULT.DebugPrint();
+    std::vector<double>s;
+    s.push_back(RESULT.data[0][0]);
+    s.push_back(RESULT.data[1][0]);
+    s.push_back(RESULT.data[2][0]);
+    RESULT = V;
+    //RESULT.DebugPrint();
+    s.push_back(RESULT.data[0][0]);
+    s.push_back(RESULT.data[1][0]);
+    s.push_back(RESULT.data[2][0]);
+    object->update(s);
+}
+
 void initiation(std::vector<StarObject*>&s){
+    double Omega2 = (234.50*PI)/180, Omega55 = (129.9*PI)/180, Omega38 = (101.8*PI)/180;
+    double i2 = (136.78*PI)/180, i38 = (166.22*PI)/180, i55 = (141.7*PI)/180;
     double v_p=sqrt(mBlackHole*(1+0.884)/(1032.59*(1-0.884)));
     double v_p_38 = sqrt(mBlackHole*(1+0.818)/(1147.51*(1-0.818)));
     double v_p_55 = sqrt(mBlackHole*(1+0.74)/(892.32*(1-0.74)));
     double r_p=(1-0.884)*1032.59;
     double r_p_38 = (1-0.818)*1147.51;
     double r_p_55 = (1-0.74)*892.32;
+//    s.push_back(new StarObject(  0, r_p, r_p*sin(PI*139.568327/180),  0, v_p, -v_p*sin(PI*139.568327/180), (14*2*pow(10, 30))));
+//
+//    projection(s[s.size()-1], Omega2, i2);
+//
+//    s.push_back(new StarObject(r_p_38*cos(PI*133/180)*cos(PI*166.22/180), r_p_38*sin(PI*133/180)*cos(PI*166.22/180), r_p_38*sin(PI*166.22/180),
+//                               v_p_38*cos(PI*(133)/180)*cos(PI*166.22/180), v_p_38*sin(PI*(133)/180)*cos(PI*166.22/180), v_p_38*sin(PI*166.22/180), 0));
+//
+//    projection(s[s.size()-1], Omega38, i38);
+//
+//    s.push_back(new StarObject(r_p_55*cos(PI*(105)/180)*cos(PI*141.7/180), r_p_55*sin(PI*(105)/180)*cos(PI*141.7/180), r_p_55*sin(PI*141.7/180),
+//                               v_p_55*cos(PI*(105)/180)*cos(PI*141.7/180), v_p_55*sin(PI*(105)/180)*cos(PI*141.7/180), v_p_55*sin(PI*141.7/180), 0));
+//    projection(s[s.size()-1], Omega55, i55);
+
     s.push_back(new StarObject(  0, r_p*cos(PI*139.568327/180), r_p*sin(PI*139.568327/180),  0, v_p*cos(PI*139.568327/180), -v_p*sin(PI*139.568327/180), (14*2*pow(10, 30))));
+
+    //projection(s[s.size()-1], Omega2, i2);
+
     s.push_back(new StarObject(r_p_38*cos(PI*52.96/180)*cos(PI*166.22/180), r_p_38*sin(PI*52.96/180)*cos(PI*166.22/180), r_p_38*sin(PI*166.22/180),
                                v_p_38*cos(PI*(52.96-90)/180)*cos(PI*166.22/180), v_p_38*sin(PI*(52.96-90)/180)*cos(PI*166.22/180), v_p_38*sin(PI*166.22/180), 0));
+
+    //projection(s[s.size()-1], Omega38, i38);
+
     s.push_back(new StarObject(r_p_55*cos(PI*(-62.14)/180)*cos(PI*141.7/180), r_p_55*sin(PI*(-62.14)/180)*cos(PI*141.7/180), r_p_55*sin(PI*141.7/180),
                                v_p_55*cos(PI*(-62.14-90)/180)*cos(PI*141.7/180), v_p_55*sin(PI*(-62.14-90)/180)*cos(PI*141.7/180), v_p_55*sin(PI*141.7/180), 0));
+    //projection(s[s.size()-1], Omega55, i55);
 }
 
 //s.push_back(new StarObject(  -793.684467559686, 278.3355419173991, 666.948420293991, 0.9699447417658503, 1.7714776457109187, 0.3239411986816966, (14*2*pow(10, 30))));
@@ -155,7 +206,6 @@ class Draw{
     std::vector<std::vector<sf::Vertex*>> orbits;
     int cyclicVar = 2000;
 public:
-
     Draw(std::vector<StarObject*>obj){
         for(int i = 0; i < obj.size(); i++){;
             std::vector<sf::Vertex*> tmp;

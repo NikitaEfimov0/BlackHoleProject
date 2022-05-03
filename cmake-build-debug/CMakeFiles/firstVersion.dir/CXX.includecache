@@ -6,6 +6,14 @@
 
 #IncludeRegexTransform: 
 
+/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/MultMatrix/matrix.hpp
+vector
+-
+types.hpp
+/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/MultMatrix/types.hpp
+
+/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/MultMatrix/types.hpp
+
 /Users/ddomingo/Desktop/DarkHoleProject/firstVersion/main.cpp
 iostream
 -
@@ -19,4 +27,6 @@ SFML/Graphics.hpp
 /Users/ddomingo/Desktop/DarkHoleProject/firstVersion/SFML/Graphics.hpp
 fstream
 -
+MultMatrix/matrix.hpp
+/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/MultMatrix/matrix.hpp
 
