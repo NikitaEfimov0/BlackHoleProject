@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include "SFML/Graphics.hpp"
 #include <fstream>
+#include <sstream>
 #include "MultMatrix/matrix.hpp"
 const double G = 0.01720209895;
 const double mBlackHole = G*G*4000000;
@@ -164,40 +165,19 @@ void projection(StarObject* object ,double OMEGA, double i ){
 void initiation(std::vector<StarObject*>&s){
     double Omega2 = (234.50*PI)/180, Omega55 = (129.9*PI)/180, Omega38 = (101.8*PI)/180;
     double i2 = (136.78*PI)/180, i38 = (166.22*PI)/180, i55 = (141.7*PI)/180;
-    double v_p=sqrt(mBlackHole*(1+0.884)/(1032.59*(1-0.884)));
-    double v_p_38 = sqrt(mBlackHole*(1+0.818)/(1147.51*(1-0.818)));
-    double v_p_55 = sqrt(mBlackHole*(1+0.74)/(892.32*(1-0.74)));
-    double r_p=(1-0.884)*1032.59;
-    double r_p_38 = (1-0.818)*1147.51;
-    double r_p_55 = (1-0.74)*892.32;
-//    s.push_back(new StarObject(  0, r_p, r_p*sin(PI*139.568327/180),  0, v_p, -v_p*sin(PI*139.568327/180), (14*2*pow(10, 30))));
-//
-//    projection(s[s.size()-1], Omega2, i2);
-//
-//    s.push_back(new StarObject(r_p_38*cos(PI*133/180)*cos(PI*166.22/180), r_p_38*sin(PI*133/180)*cos(PI*166.22/180), r_p_38*sin(PI*166.22/180),
-//                               v_p_38*cos(PI*(133)/180)*cos(PI*166.22/180), v_p_38*sin(PI*(133)/180)*cos(PI*166.22/180), v_p_38*sin(PI*166.22/180), 0));
-//
-//    projection(s[s.size()-1], Omega38, i38);
-//
-//    s.push_back(new StarObject(r_p_55*cos(PI*(105)/180)*cos(PI*141.7/180), r_p_55*sin(PI*(105)/180)*cos(PI*141.7/180), r_p_55*sin(PI*141.7/180),
-//                               v_p_55*cos(PI*(105)/180)*cos(PI*141.7/180), v_p_55*sin(PI*(105)/180)*cos(PI*141.7/180), v_p_55*sin(PI*141.7/180), 0));
-//    projection(s[s.size()-1], Omega55, i55);
 
-    s.push_back(new StarObject(  0, r_p*cos(PI*139.568327/180), r_p*sin(PI*139.568327/180),  0, v_p*cos(PI*139.568327/180), -v_p*sin(PI*139.568327/180), (14*2*pow(10, 30))));
 
-    //projection(s[s.size()-1], Omega2, i2);
+    s.push_back(new StarObject(  120.451454,  22.675722,       -104.524315,      -0.756251   ,      3.6, 0.0, (14*2*pow(10, 30))));
 
-    s.push_back(new StarObject(r_p_38*cos(PI*52.96/180)*cos(PI*166.22/180), r_p_38*sin(PI*52.96/180)*cos(PI*166.22/180), r_p_38*sin(PI*166.22/180),
-                               v_p_38*cos(PI*(52.96-90)/180)*cos(PI*166.22/180), v_p_38*sin(PI*(52.96-90)/180)*cos(PI*166.22/180), v_p_38*sin(PI*166.22/180), 0));
+    projection(s[s.size()-1], Omega2, i2);
 
-    //projection(s[s.size()-1], Omega38, i38);
+    s.push_back(new StarObject(22.146914,    207.074722,      15.702321,       -3.191719    ,   0.341359 , 0., 0));
 
-    s.push_back(new StarObject(r_p_55*cos(PI*(-62.14)/180)*cos(PI*141.7/180), r_p_55*sin(PI*(-62.14)/180)*cos(PI*141.7/180), r_p_55*sin(PI*141.7/180),
-                               v_p_55*cos(PI*(-62.14-90)/180)*cos(PI*141.7/180), v_p_55*sin(PI*(-62.14-90)/180)*cos(PI*141.7/180), v_p_55*sin(PI*141.7/180), 0));
-    //projection(s[s.size()-1], Omega55, i55);
+    projection(s[s.size()-1], Omega38, i38);
+
+    s.push_back(new StarObject(204.046539,   -45.089123,      100.784233,      0.642879   ,     2.909287   ,    0.000000, 0));
+    projection(s[s.size()-1], Omega55, i55);
 }
-
-//s.push_back(new StarObject(  -793.684467559686, 278.3355419173991, 666.948420293991, 0.9699447417658503, 1.7714776457109187, 0.3239411986816966, (14*2*pow(10, 30))));
 
 
 
@@ -263,6 +243,145 @@ class StarStateInterpolator{
         }
         return counter;
     }
+    std::vector<std::vector<double>> parseFile(int t, int n){
+        std::vector<std::vector<double>>states;
+        std::string tmp;
+        std::string tmpNext;
+        std::string delims = " ";
+        std::vector<std::string>strings;
+        const char del = '\0';
+        double diff = 0.0;
+        int b, e = 0;
+        switch(n){
+            case 2:
+                fromFileS2.open("../Data/S2.dat");
+
+                while(!fromFileS2.eof()){
+                    getline(fromFileS2, tmp);
+                    std::istringstream iss(tmp);
+                    std::string w;
+                    while (iss >> w) strings.push_back(w);
+
+                    std::istringstream stream(strings[0]);
+                    int h;
+                    stream>>h;
+                    diff = abs(h-t);
+                    if(diff>=23){
+                        std::vector<double>firstPos;
+                        std::vector<double>secondPos;
+                        for(int i = 1; i < strings.size(); i++){
+                            double value;
+                            std::istringstream str(strings[i]);
+                            str>>value;
+                            firstPos.push_back(value);
+                        }
+                        strings.clear();
+                        getline(fromFileS2, tmpNext, del);
+                        while ((b = tmpNext.find_first_not_of(delims, e)) != tmpNext.npos) {
+                            e = tmpNext.find_first_of(delims, b);
+                            strings.push_back(tmp.substr(b, e - b));
+                            b = e;
+                        }
+                        for(int i = 1; i < strings.size(); i++){
+                            double value;
+                            std::istringstream str(strings[i]);
+                            str>>value;
+                            secondPos.push_back(value);
+                        }
+                        states.push_back(firstPos);
+                        states.push_back(secondPos);
+                    }
+
+                }
+
+                break;
+            case 38:
+                while(!fromFileS38.eof()){
+                    getline(fromFileS2, tmp, del);
+                    while ((b = tmp.find_first_not_of(delims, e)) != tmp.npos) {
+                        e = tmp.find_first_of(delims, b);
+                        strings.push_back(tmp.substr(b, e - b));
+                        b = e;
+                    }
+
+                    std::istringstream stream(strings[0]);
+                    int h;
+                    stream>>h;
+                    diff = abs(h-t);
+                    if(diff>=23){
+                        std::vector<double>firstPos;
+                        std::vector<double>secondPos;
+                        for(int i = 1; i < strings.size(); i++){
+                            double value;
+                            std::istringstream str(strings[i]);
+                            str>>value;
+                            firstPos.push_back(value);
+                        }
+                        strings.clear();
+                        getline(fromFileS2, tmpNext, del);
+                        while ((b = tmpNext.find_first_not_of(delims, e)) != tmpNext.npos) {
+                            e = tmpNext.find_first_of(delims, b);
+                            strings.push_back(tmp.substr(b, e - b));
+                            b = e;
+                        }
+                        for(int i = 1; i < strings.size(); i++){
+                            double value;
+                            std::istringstream str(strings[i]);
+                            str>>value;
+                            secondPos.push_back(value);
+                        }
+                        states.push_back(firstPos);
+                        states.push_back(secondPos);
+                    }
+
+                }
+                break;
+            case 55:
+                while(!fromFileS2.eof()){
+                    getline(fromFileS2, tmp, del);
+                    while ((b = tmp.find_first_not_of(delims, e)) != tmp.npos) {
+                        e = tmp.find_first_of(delims, b);
+                        strings.push_back(tmp.substr(b, e - b));
+                        b = e;
+                    }
+
+                    std::istringstream stream(strings[0]);
+                    int h;
+                    stream>>h;
+                    diff = abs(h-t);
+                    if(diff>=23){
+                        std::vector<double>firstPos;
+                        std::vector<double>secondPos;
+                        for(int i = 1; i < strings.size(); i++){
+                            double value;
+                            std::istringstream str(strings[i]);
+                            str>>value;
+                            firstPos.push_back(value);
+                        }
+                        strings.clear();
+                        getline(fromFileS2, tmpNext, del);
+                        while ((b = tmpNext.find_first_not_of(delims, e)) != tmpNext.npos) {
+                            e = tmpNext.find_first_of(delims, b);
+                            strings.push_back(tmp.substr(b, e - b));
+                            b = e;
+                        }
+                        for(int i = 1; i < strings.size(); i++){
+                            double value;
+                            std::istringstream str(strings[i]);
+                            str>>value;
+                            secondPos.push_back(value);
+                        }
+                        states.push_back(firstPos);
+                        states.push_back(secondPos);
+                    }
+
+                }
+                break;
+            default:
+                break;
+        }
+        return states;
+    }
 
     void clean(std::ofstream& toF, std::ifstream& fromF, std::string path){
         std::string tmp;
@@ -290,14 +409,19 @@ public:
 
     }
 
-    std::vector<double> interpolation(int t1, int t2){
-        std::vector<double> coordinates;
+    std::vector<double> interpolation(int t){
+        std::vector<std::vector<double>> coordinatesS2 = parseFile(t, 2);
+        std::vector<std::vector<double>> coordinatesS38 = parseFile(t, 38);
+        std::vector<std::vector<double>> coordinatesS55 = parseFile(t, 55);
+        for(int i = 0; i < coordinatesS2[0].size(); i++){
+            std::cout<<coordinatesS2[0][i]<<" ";
+        }
 
 
 
 
 
-        return coordinates;
+        //return coordinates;
     }
 
 
@@ -308,45 +432,49 @@ public:
         clean(toFileS2, fromFileS2, "../Data/S2.dat");
         clean(toFileS38, fromFileS38, "../Data/S38.dat");
         clean(toFileS55, fromFileS55, "../Data/S55.dat");
+        fromFileS2.close();
+        fromFileS38.close();
+        fromFileS55.close();
 
     }
 
-    void addS2Data(StarObject* objects, int h, int n){
-        switch (n) {
-            case 2:
-                toFileS2<<h;
-                toFileS2<<"\t";
-                toFileS2<<objects->returnX();
-                toFileS2<<" ";
-                toFileS2<<objects->returnY();
-                toFileS2<<" ";
-                toFileS2<<objects->returnZ();
-                toFileS2<<"\n"<<'\0';
-                break;
-            case 38:
-                toFileS38<<h;
-                toFileS38<<"\t";
-                toFileS38<<objects->returnX();
-                toFileS38<<" ";
-                toFileS38<<objects->returnY();
-                toFileS38<<" ";
-                toFileS38<<objects->returnZ();
-                toFileS38<<"\n"<<'\0';
-                break;
-            case 55:
-                toFileS55<<h;
-                toFileS55<<"\t";
-                toFileS55<<objects->returnX();
-                toFileS55<<" ";
-                toFileS55<<objects->returnY();
-                toFileS55<<" ";
-                toFileS55<<objects->returnZ();
-                toFileS55<<"\n"<<'\0';
-                break;
-            default:
-                break;
 
-        }
+    void addS2Data(StarObject* objects, int h, int n){
+            switch (n) {
+                case 2:
+                    toFileS2 << h;
+                    toFileS2 << " ";
+                    toFileS2 << objects->returnX();
+                    toFileS2 << " ";
+                    toFileS2 << objects->returnY();
+                    toFileS2 << " ";
+                    toFileS2 << objects->returnZ();
+                    toFileS2 << "\n" << '\0';
+                    break;
+                case 38:
+                    toFileS38 << h;
+                    toFileS38 << " ";
+                    toFileS38 << objects->returnX();
+                    toFileS38 << " ";
+                    toFileS38 << objects->returnY();
+                    toFileS38 << " ";
+                    toFileS38 << objects->returnZ();
+                    toFileS38 << "\n" << '\0';
+                    break;
+                case 55:
+                    toFileS55 << h;
+                    toFileS55 << " ";
+                    toFileS55 << objects->returnX();
+                    toFileS55 << " ";
+                    toFileS55 << objects->returnY();
+                    toFileS55 << " ";
+                    toFileS55 << objects->returnZ();
+                    toFileS55 << "\n" << '\0';
+                    break;
+                default:
+                   return;
+
+            }
 
     }
 
@@ -358,6 +486,8 @@ public:
 int main(){
     std::vector<StarObject*> system;
     initiation(system);
+    float want_fps = 50;
+    sf::Clock loop_timer;
     Draw* draw = new Draw(system);
     StarStateInterpolator* interp = new StarStateInterpolator();
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "Tides");
@@ -365,7 +495,7 @@ int main(){
     view.setSize(38400-1920*12, 21600-1080*12);
     window.setView(view);
     int i = 0;
-    //int lifeCycle = 19;
+
     while (window.isOpen()) {
         interp->addS2Data(system[0], i, 2);
         interp->addS2Data(system[1], i, 38);
@@ -380,19 +510,18 @@ int main(){
         window.display();
         RK4(system);
 
-        i += 1;
-        if (i % 500==0 && i!=0) {
-            //lifeCycle--;
-            interp->addS2Data(system[0], i, 2);
-            interp->addS2Data(system[1], i, 38);
-            interp->addS2Data(system[2], i, 55);
+        i += 23;
+
+        sf::Int32 frame_duration = loop_timer.getElapsedTime().asMilliseconds();
+        sf::Int32 time_to_sleep = int(1000.f/want_fps) - frame_duration;
+        if (time_to_sleep > 0) {
+            sf::sleep(sf::milliseconds(time_to_sleep));
         }
-//        if (lifeCycle == 0){
-//            interp->cleanLast();
-//            return 0;
-//        }
+        loop_timer.restart();
+
     }
 
     interp->cleanLast();
+    interp->interpolation(9);
     return 0;
 }

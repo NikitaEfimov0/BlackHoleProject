@@ -27,6 +27,8 @@ SFML/Graphics.hpp
 /Users/ddomingo/Desktop/DarkHoleProject/firstVersion/SFML/Graphics.hpp
 fstream
 -
+sstream
+-
 MultMatrix/matrix.hpp
 /Users/ddomingo/Desktop/DarkHoleProject/firstVersion/MultMatrix/matrix.hpp
 
