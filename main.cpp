@@ -257,7 +257,7 @@ class StarStateInterpolator{
                 fromFileS2.open("../Data/S2.dat");
 
                 while(!fromFileS2.eof()){
-                    getline(fromFileS2, tmp);
+                    getline(fromFileS2, tmp, del);
                     std::istringstream iss(tmp);
                     std::string w;
                     while (iss >> w) strings.push_back(w);
