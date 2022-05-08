@@ -163,19 +163,19 @@ void projection(StarObject* object ,double OMEGA, double i ){
 }
 
 void initiation(std::vector<StarObject*>&s){
-    double Omega2 = (234.50*PI)/180, Omega55 = (129.9*PI)/180, Omega38 = (101.8*PI)/180;
+    double Omega2 = (240.50*PI)/180, Omega55 = (129.9*PI)/180, Omega38 = (101.8*PI)/180;
     double i2 = (136.78*PI)/180, i38 = (166.22*PI)/180, i55 = (141.7*PI)/180;
 
 
-    s.push_back(new StarObject(  120.451454,  22.675722,       -104.524315,      -0.756251   ,      3.6, 0.0, (14*2*pow(10, 30))));
+    s.push_back(new StarObject(  120.451454,  -22.675722,       -104.524315,      -0.556251   ,      -3.6, 0.0, (14*2*pow(10, 30))));
 
     projection(s[s.size()-1], Omega2, i2);
 
-    s.push_back(new StarObject(22.146914,    207.074722,      15.702321,       -3.191719    ,   0.341359 , 0., 0));
+    s.push_back(new StarObject(-22.146914,    207.074722,      15.702321,       -3.191719    ,   0.341359 , 0., 0));
 
     projection(s[s.size()-1], Omega38, i38);
 
-    s.push_back(new StarObject(204.046539,   -45.089123,      100.784233,      0.642879   ,     2.909287   ,    0.000000, 0));
+    s.push_back(new StarObject(204.046539,   45.089123,      100.784233,      0.642879   ,     2.909287   ,    0.000000, 0));
     projection(s[s.size()-1], Omega55, i55);
 }
 
@@ -197,7 +197,8 @@ public:
             stObjects[i]->setOrigin(stObjects[i]->getRadius()/2, stObjects[i]->getRadius()/2);
             stObjects[i]->setPosition(obj[i]->returnX(), obj[i]->returnY());
             stObjects[i]->setFillColor(sf::Color::White);
-            sf::Color orbColor(100*i, 255, 50*i);
+            sf::Color orbColor(70*(i+1), 255/(i+1), 255/(i+2));
+//            sf::Color orbColor(255, 255, 255);
             orbits[i].push_back(new sf::Vertex(sf::Vector2f(obj[i]->returnX(), obj[i]->returnY()), orbColor));
         }
     }
@@ -214,7 +215,7 @@ public:
         }
 
         for(int i = 0; i < objects.size(); i++){
-            sf::Color orbColor(100*i, 255, 50*i);
+            sf::Color orbColor(70*(i+1), 255/(i+1), 255/(i+2));
             orbits[i].push_back(new sf::Vertex(sf::Vector2f(objects[i]->returnX(), objects[i]->returnY()), orbColor));
             stObjects[i]->setPosition(objects[i]->returnX(), objects[i]->returnY());
             w.draw(*stObjects[i]);
@@ -393,6 +394,7 @@ class StarStateInterpolator{
                 continue;
             }
             else{
+                tmp.append("\0");
                 result.append(tmp);
             }
         }
@@ -444,31 +446,31 @@ public:
                 case 2:
                     toFileS2 << h;
                     toFileS2 << " ";
-                    toFileS2 << objects->returnX();
+                    toFileS2 << objects->returnX()/8107.55245;
                     toFileS2 << " ";
-                    toFileS2 << objects->returnY();
+                    toFileS2 << objects->returnY()/8107.55245;
                     toFileS2 << " ";
-                    toFileS2 << objects->returnZ();
+                    toFileS2 << objects->returnZ()/8107.55245;
                     toFileS2 << "\n" << '\0';
                     break;
                 case 38:
                     toFileS38 << h;
                     toFileS38 << " ";
-                    toFileS38 << objects->returnX();
+                    toFileS38 << objects->returnX()/8107.55245;
                     toFileS38 << " ";
-                    toFileS38 << objects->returnY();
+                    toFileS38 << objects->returnY()/8107.55245;
                     toFileS38 << " ";
-                    toFileS38 << objects->returnZ();
+                    toFileS38 << objects->returnZ()/8107.55245;
                     toFileS38 << "\n" << '\0';
                     break;
                 case 55:
                     toFileS55 << h;
                     toFileS55 << " ";
-                    toFileS55 << objects->returnX();
+                    toFileS55 << objects->returnX()/8107.55245;
                     toFileS55 << " ";
-                    toFileS55 << objects->returnY();
+                    toFileS55 << objects->returnY()/8107.55245;
                     toFileS55 << " ";
-                    toFileS55 << objects->returnZ();
+                    toFileS55 << objects->returnZ()/8107.55245;
                     toFileS55 << "\n" << '\0';
                     break;
                 default:
@@ -512,16 +514,16 @@ int main(){
 
         i += 23;
 
-        sf::Int32 frame_duration = loop_timer.getElapsedTime().asMilliseconds();
-        sf::Int32 time_to_sleep = int(1000.f/want_fps) - frame_duration;
-        if (time_to_sleep > 0) {
-            sf::sleep(sf::milliseconds(time_to_sleep));
-        }
-        loop_timer.restart();
+//        sf::Int32 frame_duration = loop_timer.getElapsedTime().asMilliseconds();
+//        sf::Int32 time_to_sleep = int(1000.f/want_fps) - frame_duration;
+//        if (time_to_sleep > 0) {
+//            sf::sleep(sf::milliseconds(time_to_sleep));
+//        }
+//        loop_timer.restart();
 
     }
 
     interp->cleanLast();
-    interp->interpolation(9);
+    //interp->interpolation(9);
     return 0;
 }
