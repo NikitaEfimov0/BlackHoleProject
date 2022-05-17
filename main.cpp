@@ -24,13 +24,13 @@ public:
         zDot = wDot;
         mass = m;
     }
-    double returnX(){return x;}
-    double returnY(){return y;}
-    double returnZ(){return z;}
-    double returnXd(){return xDot;}
-    double returnYd(){return yDot;}
-    double returnZd(){return zDot;}
-    double returnM(){return mass;}
+    double X(){return x;}
+    double Y(){return y;}
+    double Z(){return z;}
+    double dX(){return xDot;}
+    double dY(){return yDot;}
+    double dZ(){return zDot;}
+    double M(){return mass;}
 
     void update(std::vector<double>s){
         x = s[0];
@@ -100,13 +100,13 @@ void RK4(std::vector<StarObject*>stellarObjects){
     double h = 10;
     std::vector<double>tmp;
     for(int i = 0; i < stellarObjects.size(); i++){
-        system.push_back(stellarObjects[i]->returnX());
-        system.push_back(stellarObjects[i]->returnY());
-        system.push_back(stellarObjects[i]->returnZ());
-        system.push_back(stellarObjects[i]->returnXd());
-        system.push_back(stellarObjects[i]->returnYd());
-        system.push_back(stellarObjects[i]->returnZd());
-        mass.push_back(stellarObjects[i]->returnM());
+        system.push_back(stellarObjects[i]->X());
+        system.push_back(stellarObjects[i]->Y());
+        system.push_back(stellarObjects[i]->Z());
+        system.push_back(stellarObjects[i]->dX());
+        system.push_back(stellarObjects[i]->dY());
+        system.push_back(stellarObjects[i]->dZ());
+        mass.push_back(stellarObjects[i]->M());
     }
 
     for(int i = 0; i < system.size(); i++){
@@ -136,12 +136,12 @@ void RK4(std::vector<StarObject*>stellarObjects){
 }
 
 void projection(StarObject* object ,double OMEGA, double i ){
-    Matrix R = Matrix({{object->returnX()},
-                            {object->returnY()},
-                            {object->returnZ()}});
-    Matrix V = Matrix({{object->returnXd()},
-                       {object->returnYd()},
-                       {object->returnZd()}});
+    Matrix R = Matrix({{object->X()},
+                            {object->Y()},
+                            {object->Z()}});
+    Matrix V = Matrix({{object->dX()},
+                       {object->dY()},
+                       {object->dZ()}});
     Matrix A2 = Matrix(
             {{cos(OMEGA+PointOfMid), -cos(i)* sin(OMEGA+PointOfMid), sin(i)* sin(OMEGA+PointOfMid)},
              {sin(OMEGA+PointOfMid), cos(i)* cos(OMEGA+PointOfMid), -sin(i)* cos(OMEGA+PointOfMid)},
@@ -195,11 +195,11 @@ public:
             stObjects.push_back(new sf::CircleShape());
             stObjects[i]->setRadius(100);
             stObjects[i]->setOrigin(stObjects[i]->getRadius()/2, stObjects[i]->getRadius()/2);
-            stObjects[i]->setPosition(obj[i]->returnX(), obj[i]->returnY());
+            stObjects[i]->setPosition(obj[i]->X(), obj[i]->Y());
             stObjects[i]->setFillColor(sf::Color::White);
             sf::Color orbColor(70*(i+1), 255/(i+1), 255/(i+2));
 //            sf::Color orbColor(255, 255, 255);
-            orbits[i].push_back(new sf::Vertex(sf::Vector2f(obj[i]->returnX(), obj[i]->returnY()), orbColor));
+            orbits[i].push_back(new sf::Vertex(sf::Vector2f(obj[i]->X(), obj[i]->Y()), orbColor));
         }
     }
 
@@ -216,8 +216,8 @@ public:
 
         for(int i = 0; i < objects.size(); i++){
             sf::Color orbColor(70*(i+1), 255/(i+1), 255/(i+2));
-            orbits[i].push_back(new sf::Vertex(sf::Vector2f(objects[i]->returnX(), objects[i]->returnY()), orbColor));
-            stObjects[i]->setPosition(objects[i]->returnX(), objects[i]->returnY());
+            orbits[i].push_back(new sf::Vertex(sf::Vector2f(objects[i]->X(), objects[i]->Y()), orbColor));
+            stObjects[i]->setPosition(objects[i]->X(), objects[i]->Y());
             w.draw(*stObjects[i]);
             for(int j = 0; j < orbits[i].size(); j++){
                 w.draw(orbits[i][j], 1, sf::Points);
@@ -250,14 +250,15 @@ class StarStateInterpolator{
         std::string tmpNext;
         std::string delims = " ";
         std::vector<std::string>strings;
-        const char del = '\0';
+        const char del = '\n';
         double diff = 0.0;
+        bool terminate = false;
         int b, e = 0;
         switch(n){
             case 2:
                 fromFileS2.open("../Data/S2.dat");
 
-                while(!fromFileS2.eof()){
+                while(!fromFileS2.eof() && !terminate){
                     getline(fromFileS2, tmp, del);
                     std::istringstream iss(tmp);
                     std::string w;
@@ -267,7 +268,7 @@ class StarStateInterpolator{
                     int h;
                     stream>>h;
                     diff = abs(h-t);
-                    if(diff>=23){
+                    if(diff<=23){
                         std::vector<double>firstPos;
                         std::vector<double>secondPos;
                         for(int i = 1; i < strings.size(); i++){
@@ -291,25 +292,27 @@ class StarStateInterpolator{
                         }
                         states.push_back(firstPos);
                         states.push_back(secondPos);
+
                     }
+                    terminate = true;
 
                 }
 
                 break;
             case 38:
-                while(!fromFileS38.eof()){
-                    getline(fromFileS2, tmp, del);
-                    while ((b = tmp.find_first_not_of(delims, e)) != tmp.npos) {
-                        e = tmp.find_first_of(delims, b);
-                        strings.push_back(tmp.substr(b, e - b));
-                        b = e;
-                    }
+                fromFileS38.open("../Data/S2.dat");
+
+                while(!fromFileS38.eof() && !terminate){
+                    getline(fromFileS38, tmp, del);
+                    std::istringstream iss(tmp);
+                    std::string w;
+                    while (iss >> w) strings.push_back(w);
 
                     std::istringstream stream(strings[0]);
                     int h;
                     stream>>h;
                     diff = abs(h-t);
-                    if(diff>=23){
+                    if(diff<=23){
                         std::vector<double>firstPos;
                         std::vector<double>secondPos;
                         for(int i = 1; i < strings.size(); i++){
@@ -319,7 +322,7 @@ class StarStateInterpolator{
                             firstPos.push_back(value);
                         }
                         strings.clear();
-                        getline(fromFileS2, tmpNext, del);
+                        getline(fromFileS38, tmpNext, del);
                         while ((b = tmpNext.find_first_not_of(delims, e)) != tmpNext.npos) {
                             e = tmpNext.find_first_of(delims, b);
                             strings.push_back(tmp.substr(b, e - b));
@@ -334,23 +337,24 @@ class StarStateInterpolator{
                         states.push_back(firstPos);
                         states.push_back(secondPos);
                     }
+                    terminate = true;
 
                 }
                 break;
             case 55:
-                while(!fromFileS2.eof()){
-                    getline(fromFileS2, tmp, del);
-                    while ((b = tmp.find_first_not_of(delims, e)) != tmp.npos) {
-                        e = tmp.find_first_of(delims, b);
-                        strings.push_back(tmp.substr(b, e - b));
-                        b = e;
-                    }
+                fromFileS55.open("../Data/S55.dat");
+
+                while(!fromFileS55.eof() && !terminate){
+                    getline(fromFileS55, tmp, del);
+                    std::istringstream iss(tmp);
+                    std::string w;
+                    while (iss >> w) strings.push_back(w);
 
                     std::istringstream stream(strings[0]);
                     int h;
                     stream>>h;
                     diff = abs(h-t);
-                    if(diff>=23){
+                    if(diff<=23){
                         std::vector<double>firstPos;
                         std::vector<double>secondPos;
                         for(int i = 1; i < strings.size(); i++){
@@ -360,7 +364,7 @@ class StarStateInterpolator{
                             firstPos.push_back(value);
                         }
                         strings.clear();
-                        getline(fromFileS2, tmpNext, del);
+                        getline(fromFileS55, tmpNext, del);
                         while ((b = tmpNext.find_first_not_of(delims, e)) != tmpNext.npos) {
                             e = tmpNext.find_first_of(delims, b);
                             strings.push_back(tmp.substr(b, e - b));
@@ -375,6 +379,7 @@ class StarStateInterpolator{
                         states.push_back(firstPos);
                         states.push_back(secondPos);
                     }
+                    terminate = true;
 
                 }
                 break;
@@ -415,9 +420,10 @@ public:
         std::vector<std::vector<double>> coordinatesS2 = parseFile(t, 2);
         std::vector<std::vector<double>> coordinatesS38 = parseFile(t, 38);
         std::vector<std::vector<double>> coordinatesS55 = parseFile(t, 55);
-        for(int i = 0; i < coordinatesS2[0].size(); i++){
-            std::cout<<coordinatesS2[0][i]<<" ";
-        }
+        for(int j = 0; j < coordinatesS2.size(); j++)
+            for(int i = 0; i < coordinatesS2[0].size(); i++){
+                std::cout<<coordinatesS2[0][i]<<" ";
+            }
 
 
 
@@ -446,31 +452,31 @@ public:
                 case 2:
                     toFileS2 << h;
                     toFileS2 << " ";
-                    toFileS2 << objects->returnX()/8107.55245;
+                    toFileS2 << objects->X()/8107.55245;
                     toFileS2 << " ";
-                    toFileS2 << objects->returnY()/8107.55245;
+                    toFileS2 << objects->Y() / 8107.55245;
                     toFileS2 << " ";
-                    toFileS2 << objects->returnZ()/8107.55245;
+                    toFileS2 << objects->Z() / 8107.55245;
                     toFileS2 << "\n" << '\0';
                     break;
                 case 38:
                     toFileS38 << h;
                     toFileS38 << " ";
-                    toFileS38 << objects->returnX()/8107.55245;
+                    toFileS38 << objects->X()/8107.55245;
                     toFileS38 << " ";
-                    toFileS38 << objects->returnY()/8107.55245;
+                    toFileS38 << objects->Y() / 8107.55245;
                     toFileS38 << " ";
-                    toFileS38 << objects->returnZ()/8107.55245;
+                    toFileS38 << objects->Z() / 8107.55245;
                     toFileS38 << "\n" << '\0';
                     break;
                 case 55:
                     toFileS55 << h;
                     toFileS55 << " ";
-                    toFileS55 << objects->returnX()/8107.55245;
+                    toFileS55 << objects->X()/8107.55245;
                     toFileS55 << " ";
-                    toFileS55 << objects->returnY()/8107.55245;
+                    toFileS55 << objects->Y() / 8107.55245;
                     toFileS55 << " ";
-                    toFileS55 << objects->returnZ()/8107.55245;
+                    toFileS55 << objects->Z() / 8107.55245;
                     toFileS55 << "\n" << '\0';
                     break;
                 default:
@@ -514,16 +520,9 @@ int main(){
 
         i += 23;
 
-//        sf::Int32 frame_duration = loop_timer.getElapsedTime().asMilliseconds();
-//        sf::Int32 time_to_sleep = int(1000.f/want_fps) - frame_duration;
-//        if (time_to_sleep > 0) {
-//            sf::sleep(sf::milliseconds(time_to_sleep));
-//        }
-//        loop_timer.restart();
-
     }
 
     interp->cleanLast();
-    //interp->interpolation(9);
+    interp->interpolation(9);
     return 0;
 }
