@@ -244,12 +244,13 @@ class StarStateInterpolator{
         }
         return counter;
     }
-    std::vector<std::vector<double>> parseFile(int t, int n){
-        std::vector<std::vector<double>>states;
+    std::vector<std::pair<std::vector<double>, int>> parseFile(int t, int n){
+        std::vector<std::pair<std::vector<double>, int>>states;
         std::string tmp;
         std::string tmpNext;
         std::string delims = " ";
-        std::vector<std::string>strings;
+        int tn, tn1;
+        std::vector<std::string>strings, strings1;
         const char del = '\n';
         double diff = 0.0;
         bool terminate = false;
@@ -267,6 +268,7 @@ class StarStateInterpolator{
                     std::istringstream stream(strings[0]);
                     int h;
                     stream>>h;
+                    tn = h;
                     diff = abs(h-t);
                     if(diff<=23){
                         std::vector<double>firstPos;
@@ -279,23 +281,26 @@ class StarStateInterpolator{
                         }
                         strings.clear();
                         getline(fromFileS2, tmpNext, del);
-                        while ((b = tmpNext.find_first_not_of(delims, e)) != tmpNext.npos) {
-                            e = tmpNext.find_first_of(delims, b);
-                            strings.push_back(tmp.substr(b, e - b));
-                            b = e;
-                        }
+                        std::istringstream iss1(tmpNext);
+                        std::string w1;
+                        while (iss1 >> w1) strings.push_back(w1);
+
+                        std::istringstream stream1(strings[0]);
+                        int h1;
+                        stream1>>h1;
+                        tn1 = h1;
                         for(int i = 1; i < strings.size(); i++){
                             double value;
                             std::istringstream str(strings[i]);
                             str>>value;
                             secondPos.push_back(value);
                         }
-                        states.push_back(firstPos);
-                        states.push_back(secondPos);
+                        states.push_back(std::pair(firstPos, tn));
+                        states.push_back(std::pair(secondPos, tn1));
 
                     }
                     terminate = true;
-
+                    fromFileS2.close();
                 }
 
                 break;
@@ -311,6 +316,7 @@ class StarStateInterpolator{
                     std::istringstream stream(strings[0]);
                     int h;
                     stream>>h;
+                    tn = h;
                     diff = abs(h-t);
                     if(diff<=23){
                         std::vector<double>firstPos;
@@ -323,22 +329,26 @@ class StarStateInterpolator{
                         }
                         strings.clear();
                         getline(fromFileS38, tmpNext, del);
-                        while ((b = tmpNext.find_first_not_of(delims, e)) != tmpNext.npos) {
-                            e = tmpNext.find_first_of(delims, b);
-                            strings.push_back(tmp.substr(b, e - b));
-                            b = e;
-                        }
-                        for(int i = 1; i < strings.size(); i++){
+                        std::istringstream iss1(tmpNext);
+                        std::string w1;
+                        while (iss >> w1) strings1.push_back(w1);
+
+                        std::istringstream stream1(strings1[0]);
+                        int h1;
+                        stream>>h1;
+                        tn1 = h1;
+                        for(int i = 1; i < strings1.size(); i++){
                             double value;
-                            std::istringstream str(strings[i]);
+                            std::istringstream str(strings1[i]);
                             str>>value;
                             secondPos.push_back(value);
                         }
-                        states.push_back(firstPos);
-                        states.push_back(secondPos);
+                        states.push_back(std::pair(firstPos, tn));
+                        states.push_back(std::pair(secondPos, tn1));
+
                     }
                     terminate = true;
-
+                    fromFileS38.close();
                 }
                 break;
             case 55:
@@ -353,6 +363,7 @@ class StarStateInterpolator{
                     std::istringstream stream(strings[0]);
                     int h;
                     stream>>h;
+                    tn = h;
                     diff = abs(h-t);
                     if(diff<=23){
                         std::vector<double>firstPos;
@@ -365,22 +376,26 @@ class StarStateInterpolator{
                         }
                         strings.clear();
                         getline(fromFileS55, tmpNext, del);
-                        while ((b = tmpNext.find_first_not_of(delims, e)) != tmpNext.npos) {
-                            e = tmpNext.find_first_of(delims, b);
-                            strings.push_back(tmp.substr(b, e - b));
-                            b = e;
-                        }
-                        for(int i = 1; i < strings.size(); i++){
+                        std::istringstream iss1(tmpNext);
+                        std::string w1;
+                        while (iss >> w1) strings1.push_back(w1);
+
+                        std::istringstream stream1(strings1[0]);
+                        int h1;
+                        stream>>h1;
+                        tn1 = h1;
+                        for(int i = 1; i < strings1.size(); i++){
                             double value;
-                            std::istringstream str(strings[i]);
+                            std::istringstream str(strings1[i]);
                             str>>value;
                             secondPos.push_back(value);
                         }
-                        states.push_back(firstPos);
-                        states.push_back(secondPos);
+                        states.push_back(std::pair(firstPos, tn));
+                        states.push_back(std::pair(secondPos, tn1));
+
                     }
                     terminate = true;
-
+                    fromFileS55.close();
                 }
                 break;
             default:
@@ -416,20 +431,30 @@ public:
 
     }
 
-    std::vector<double> interpolation(int t){
-        std::vector<std::vector<double>> coordinatesS2 = parseFile(t, 2);
-        std::vector<std::vector<double>> coordinatesS38 = parseFile(t, 38);
-        std::vector<std::vector<double>> coordinatesS55 = parseFile(t, 55);
-        for(int j = 0; j < coordinatesS2.size(); j++)
-            for(int i = 0; i < coordinatesS2[0].size(); i++){
-                std::cout<<coordinatesS2[0][i]<<" ";
+    std::vector<double> interpolation(int t, int StarNum){
+
+        std::vector<std::pair<std::vector<double>, int>> coordinatesS2 = parseFile(t, StarNum);
+        for(int i = 0; i < coordinatesS2.size(); i++){
+            std::cout<<"t"<<i<<" = "<<coordinatesS2[i].second<<" ";
+            for(int j = 0; j < coordinatesS2[i].first.size(); j++){
+                std::cout<<coordinatesS2[i].first[j]<<" ";
             }
+            std::cout<<std::endl;
+        }
+        Matrix Xt0({{coordinatesS2[0].first[0]}, {coordinatesS2[0].first[1]}, {coordinatesS2[0].first[2]}});
+        Matrix Xt1({{coordinatesS2[1].first[0]}, {coordinatesS2[1].first[1]}, {coordinatesS2[1].first[2]}});
 
-
-
-
-
-        //return coordinates;
+        Matrix X = Xt0*(double)((double)(coordinatesS2[1].second-t)/(coordinatesS2[1].second-coordinatesS2[0].second))+
+                Xt1*((double)(t-coordinatesS2[0].second)/(coordinatesS2[1].second-coordinatesS2[0].second));
+        std::vector<double> result;
+        result.push_back(X.data[0][0]);
+        result.push_back(X.data[1][0]);
+        result.push_back(X.data[2][0]);
+        std::cout<<"t = "<<t<<" ";
+        for(int i = 0; i < result.size(); i++){
+            std::cout<<result[i]<<" ";
+        }
+        return std::vector<double>();
     }
 
 
@@ -523,6 +548,6 @@ int main(){
     }
 
     interp->cleanLast();
-    interp->interpolation(9);
+    interp->interpolation(9, 2);
     return 0;
 }
