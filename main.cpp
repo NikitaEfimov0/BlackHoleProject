@@ -9,6 +9,7 @@
 #include "StarObject.h"
 #include "Draw.h"
 #include "StarStateInterpolator.h"
+#include "IsohronDerivative.h"
 const double G = 0.01720209895;
 const double mBlackHole = G*G*4000000;
 const double PI = 4*atan(1.);
@@ -30,10 +31,6 @@ void derivative(std::vector<double>X, std::vector<double>&Xdot){
     Xdot[3] =- X[0]*((mBlackHole)/(pow(norm(X[0], X[1], X[2], 0, 0, 0), 3)));
     Xdot[4] =- X[1]*((mBlackHole)/(pow(norm(X[0], X[1], X[2], 0, 0, 0), 3)));
     Xdot[5] =- X[2]*((mBlackHole)/(pow(norm(X[0], X[1], X[2], 0, 0, 0), 3)));
-
-
-
-
     Xdot[6] = X[9];
     Xdot[7] = X[10];
     Xdot[8] = X[11];
