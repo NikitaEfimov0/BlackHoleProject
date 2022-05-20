@@ -83,7 +83,7 @@ class StarStateInterpolator{
                 fromFileS2.close();
                 break;
             case 38:
-                fromFileS38.open("../Data/S2.dat");
+                fromFileS38.open("../Data/S38.dat");
 
                 while(!fromFileS38.eof() && !terminate){
                     getline(fromFileS38, tmp, del);
