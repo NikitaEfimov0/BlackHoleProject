@@ -34,13 +34,14 @@ public:
     Matrix( u32 x, u32 y, float **cells );
 	Matrix( const Matrix& ); // Copying.
 
-    explicit Matrix( u32 squareside ) : Matrix( squareside, squareside ) {};
+     explicit Matrix( u32 squareside ) : Matrix( squareside, squareside ) {};
     Matrix( u32 squareside, double **cells ) : Matrix( squareside, squareside, cells ) {};
 
 	//Matrix( std::initializer_list<std::initializer_list<double>> );
 	explicit Matrix( std::vector<std::vector<double>> );
 
-	Matrix& operator= ( const Matrix& ) noexcept;	// Moving.
+	Matrix& operator= ( const Matrix& ) noexcept;// Moving.
+	//Matrix* operator=(Matrix&) noexcept;
 	Matrix operator= ( const std::vector<std::vector<double>>& );
     Matrix operator+ ( const Matrix& );
     Matrix operator- ( const Matrix& );

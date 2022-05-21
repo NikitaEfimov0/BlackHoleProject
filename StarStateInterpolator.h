@@ -77,6 +77,9 @@ class StarStateInterpolator{
                         states.push_back(std::pair(secondPos, tn1));
                         terminate = true;
                     }
+                    else{
+                        strings.clear();
+                    }
 
                 }
 
@@ -124,6 +127,9 @@ class StarStateInterpolator{
                         states.push_back(std::pair(firstPos, tn));
                         states.push_back(std::pair(secondPos, tn1));
                         terminate = true;
+                    }
+                    else{
+                        strings.clear();
                     }
 
 
@@ -173,7 +179,9 @@ class StarStateInterpolator{
                         states.push_back(std::pair(secondPos, tn1));
                         terminate = true;
                     }
-
+                    else{
+                        strings.clear();
+                    }
 
                 }
                 fromFileS55.close();
