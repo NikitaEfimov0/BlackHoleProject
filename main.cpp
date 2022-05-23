@@ -9,6 +9,7 @@
 #include "StarObject.h"
 #include "Draw.h"
 #include "StarStateInterpolator.h"
+#include "IsohronDerivative.h"
 const double G = 0.01720209895;
 const double mBlackHole = G*G*4000000;
 const double PI = 4*atan(1.);
@@ -20,7 +21,8 @@ double norm(double x1, double y1, double z1, double  x2, double y2, double z2){
 }
 
 
-void derivative(std::vector<double>X, std::vector<double>&Xdot){
+void derivative(std::vector<double>X, std::vector<double>&Xdot, IsohronDerivative isohronDerivative){
+    double m = mBlackHole;
     for(int i = 0; i < X.size(); i++){
         Xdot.push_back(0);
     }
@@ -30,10 +32,7 @@ void derivative(std::vector<double>X, std::vector<double>&Xdot){
     Xdot[3] =- X[0]*((mBlackHole)/(pow(norm(X[0], X[1], X[2], 0, 0, 0), 3)));
     Xdot[4] =- X[1]*((mBlackHole)/(pow(norm(X[0], X[1], X[2], 0, 0, 0), 3)));
     Xdot[5] =- X[2]*((mBlackHole)/(pow(norm(X[0], X[1], X[2], 0, 0, 0), 3)));
-
-
-
-
+    isohronDerivative.updateMatrix(X[0], X[1], X[2], m);
     Xdot[6] = X[9];
     Xdot[7] = X[10];
     Xdot[8] = X[11];
@@ -70,7 +69,7 @@ void updateStates(std::vector<StarObject*>&stellarObjects, std::vector<double>sy
     }
 }
 
-void RK4(std::vector<StarObject*>stellarObjects){
+void RK4(std::vector<StarObject*>stellarObjects, IsohronDerivative isohronDerivative){
     std::vector<double>system;
     std::vector<double>mass;
     double h = 10;
@@ -89,15 +88,15 @@ void RK4(std::vector<StarObject*>stellarObjects){
         tmp.push_back(0);
     }
     std::vector<double>k1, k2, k3, k4;
-    derivative(system, k1);
+    derivative(system, k1, isohronDerivative);
     set_tmp(tmp, system, k1, h);
-    derivative(tmp, k2);
+    derivative(tmp, k2, isohronDerivative);
 
     set_tmp(tmp, system, k2, h);
-    derivative(tmp, k3);
+    derivative(tmp, k3, isohronDerivative);
 
     set_tmp(tmp, system, k3, 2*h);
-    derivative(tmp, k4);
+    derivative(tmp, k4, isohronDerivative);
 
     for(int i = 0; i < system.size(); i++){
         system[i]+=(h/6*(k1[i]+2*k2[i]+2*k3[i]+k4[i]));
@@ -161,6 +160,7 @@ void initiation(std::vector<StarObject*>&s){
 
 
 int main(){
+    IsohronDerivative isohronDerivative = IsohronDerivative();
     std::vector<StarObject*> system;
     initiation(system);
     sf::Clock loop_timer;
@@ -184,11 +184,12 @@ int main(){
         window.clear();
         draw->setObjects(window, system);
         window.display();
-        RK4(system);
+        RK4(system, isohronDerivative);
 
         i += 23;
     }
-
+   // isohronDerivative.printMatrixdXdP();
+    std::cout<<"\n\n\n";
     interp->cleanLast();
     interp->interpolation(50, 2);
     return 0;

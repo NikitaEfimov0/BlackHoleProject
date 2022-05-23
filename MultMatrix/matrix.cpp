@@ -2,6 +2,7 @@
 #include "matrix.hpp"
 #include "types.hpp"
 #include <cmath>
+#include <iostream>
 
 Matrix::~Matrix() {
     for ( u32 i = 0; i < n; i++ )
@@ -212,7 +213,7 @@ void Matrix::DebugPrint( void ) {
 		printf( " " );
 
         for ( u32 j = 0; j < m; j++ )
-			printf( "%7.2f ", data[ i ][ j ] );
+			std::cout<<data[i][j]<<" ";
 
 		puts( "" ); // A newline.
 	}
@@ -267,3 +268,17 @@ Matrix Matrix::RotateZ(float angle) {
     });
     return res;
 }
+
+//Matrix *Matrix::operator=(Matrix& matrix) noexcept {
+//
+//    if ( this == &matrix )
+//        return this;
+//
+//    std::move(this, matrix)
+//
+//    for ( u32 i = 0; i < n; i++ )
+//        delete[] data[ i ];
+//
+//    delete[] data;
+//    return nullptr;
+//}
