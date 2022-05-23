@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="firstVersion"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\..\;CMake Files\..\..\..\..\..\Library\;CMake Files\..\..\..\..\..\Library\Frameworks\;CMake Files\..\..\..\..\..\Library\Frameworks\SFML.framework\;CMake Files\..\..\..\..\..\Library\Frameworks\SFML.framework\Resources\;CMake Files\..\..\..\..\..\Library\Frameworks\SFML.framework\Resources\CMake\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="firstVersion">
+				<Option output="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug/firstVersion" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Library/Frameworks/SFML.framework"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.5/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 firstVersion"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="firstVersion/fast">
+				<Option output="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug/firstVersion" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Library/Frameworks/SFML.framework"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.5/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 firstVersion/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/Draw.h">
+			<Option target="firstVersion"/>
+		</Unit>
+		<Unit filename="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/IsohronDerivative.h">
+			<Option target="firstVersion"/>
+		</Unit>
+		<Unit filename="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/MultMatrix/matrix.cpp">
+			<Option target="firstVersion"/>
+		</Unit>
+		<Unit filename="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/MultMatrix/matrix.hpp">
+			<Option target="firstVersion"/>
+		</Unit>
+		<Unit filename="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/StarObject.h">
+			<Option target="firstVersion"/>
+		</Unit>
+		<Unit filename="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/StarStateInterpolator.h">
+			<Option target="firstVersion"/>
+		</Unit>
+		<Unit filename="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/main.cpp">
+			<Option target="firstVersion"/>
+		</Unit>
+		<Unit filename="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/../../../../../Library/Frameworks/SFML.framework/Resources/CMake/SFMLConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Library\Frameworks\SFML.framework\Resources\CMake\"/>
+		</Unit>
+		<Unit filename="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/../../../../../Library/Frameworks/SFML.framework/Resources/CMake/SFMLConfigDependencies.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Library\Frameworks\SFML.framework\Resources\CMake\"/>
+		</Unit>
+		<Unit filename="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/../../../../../Library/Frameworks/SFML.framework/Resources/CMake/SFMLConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Library\Frameworks\SFML.framework\Resources\CMake\"/>
+		</Unit>
+		<Unit filename="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/../../../../../Library/Frameworks/SFML.framework/Resources/CMake/SFMLSharedTargets-release.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Library\Frameworks\SFML.framework\Resources\CMake\"/>
+		</Unit>
+		<Unit filename="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/../../../../../Library/Frameworks/SFML.framework/Resources/CMake/SFMLSharedTargets.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Library\Frameworks\SFML.framework\Resources\CMake\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

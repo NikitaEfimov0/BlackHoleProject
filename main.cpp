@@ -2,17 +2,12 @@
 #include <vector>
 #include <cmath>
 #include <unistd.h>
-
-#if defined(SFML_STATIC) || defined(SFML_DYNAMIC)
-#	define _SFML
-#   include "SFML/Graphics.hpp"
-#   include "Draw.h"
-#endif
-
+#include "SFML/Graphics.hpp"
 #include <fstream>
 #include <sstream>
 #include "MultMatrix/matrix.hpp"
 #include "StarObject.h"
+#include "Draw.h"
 #include "StarStateInterpolator.h"
 const double G = 0.01720209895;
 const double mBlackHole = G*G*4000000;
@@ -168,28 +163,19 @@ void initiation(std::vector<StarObject*>&s){
 int main(){
     std::vector<StarObject*> system;
     initiation(system);
-#ifdef _SFML
     sf::Clock loop_timer;
     Draw* draw = new Draw(system);
-#endif
     StarStateInterpolator* interp = new StarStateInterpolator();
-#ifdef _SFML
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "Tides");
     sf::View view;
     view.setSize(38400-1920*12, 21600-1080*12);
     window.setView(view);
-#endif
     int i = 0;
 
-#ifdef _SFML
     while (window.isOpen()) {
-#else
-    while ( i < 23 * 100000 ) {
-#endif
         interp->addS2Data(system[0], i, 2);
         interp->addS2Data(system[1], i, 38);
         interp->addS2Data(system[2], i, 55);
-#ifdef _SFML
         sf::Event event;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))window.close();
         while (window.pollEvent(event)) {
@@ -198,16 +184,12 @@ int main(){
         window.clear();
         draw->setObjects(window, system);
         window.display();
-#endif
         RK4(system);
-
-        printf( "Step %i.\n", i );
 
         i += 23;
     }
 
     interp->cleanLast();
     interp->interpolation(50, 2);
-
     return 0;
 }
