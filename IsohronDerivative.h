@@ -9,8 +9,28 @@ class IsohronDerivative{
 public:
 
 
+    double dvxdm(double x, double y, double z, double m) {
+        return (-x)/(pow(sqrt(x*x+y*y+z*z), 3));
+    }
+
+    double dvydm(double x, double y, double z, double m) {
+        return (-y)/(pow(sqrt(x*x+y*y+z*z), 3));;
+    }
+
+    double dvzdm(double x, double y, double z, double m) {
+        return (-z)/(pow(sqrt(x*x+y*y+z*z), 3));;
+    }
+
     void updateMatrix(double x, double y, double z, double m){
-        static Matrix dXdP = Matrix({{1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,   0.0f},
+        Matrix dFdGm = Matrix({{0, 0, 0, 0, 0, 0, 0},
+                               {0, 0, 0, 0, 0, 0, 0},
+                               {0, 0, 0, 0, 0, 0, 0},
+                               {0, 0, 0, 0, 0, 0, dvxdm(x, y, z, m)},
+                               {0, 0, 0, 0, 0, 0, dvydm(x, y, z, m)},
+                               {0, 0, 0, 0, 0, 0, dvzdm(x, y, z, m)}});
+
+        static Matrix dXdP = Matrix({
+                       {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,   0.0f},
                        {0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,   0.0f},
                        {0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,   0.0f},
                        {0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,   0.0f},
@@ -19,16 +39,15 @@ public:
         std::cout<<"before:\n";
         dXdP.DebugPrint();
         std::cout<<"\n";
-        Matrix dFdX = Matrix({{0,                 0,                 0,                 1, 0, 0},
-                {0,                 0,                 0,                 0, 1, 0},
-                {0,                 0,                 0,                 0, 0, 1},
-                {dvxdx(x, y, z, m), dvxdy(x, y, z, m), dvxdz(x, y, z, m), 0, 0, 0},
-                {dvydx(x, y, z, m), dvydy(x, y, z, m), dvydz(x, y, z, m), 0, 0, 0},
-                {dvzdx(x, y, z, m), dvzdy(x, y, z, m), dvzdz(x, y, z, m), 0, 0, 0}});
-//        dFdX.DebugPrint();
-//        std::cout<<std::endl;
-
-        dXdP = dFdX*dXdP;
+        Matrix dFdX = Matrix({
+                {0.0f,                 0.0f,                 0.0f,        1.0f, 0.0f, 0.0f},
+                {0.0f,                 0.0f,                 0.0f,        0.0f, 1.0f, 0.0f},
+                {0.0f,                 0.0f,                 0.0f,        0.0f, 0.0f, 1.0f},
+                {dvxdx(x, y, z, m), dvxdy(x, y, z, m), dvxdz(x, y, z, m), 1.0f, 0.0f, 0.0f},
+                {dvydx(x, y, z, m), dvydy(x, y, z, m), dvydz(x, y, z, m), 0.0f, 1.0f, 0.0f},
+                {dvzdx(x, y, z, m), dvzdy(x, y, z, m), dvzdz(x, y, z, m), 0.0f, 0.0f, 1.0f}});
+        dFdX.DebugPrint();
+        dXdP = dFdGm+dFdX*dXdP;
         std::cout<<"after:\n";
         dXdP.DebugPrint();
         std::cout<<std::endl;
@@ -79,6 +98,9 @@ public:
     double dvzdz(double x, double y, double z, double m){
         return (((-m)/(pow((sqrt(x*x+y*y+z*z)), 3)))+((z*z*m*3)/(pow((sqrt(x*x+y*y+z*z)), 5))));
     }
+
+
+
 
 
 
