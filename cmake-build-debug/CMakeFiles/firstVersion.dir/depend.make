@@ -6,6 +6,7 @@ CMakeFiles/firstVersion.dir/MultMatrix/matrix.cpp.o: ../MultMatrix/matrix.hpp
 CMakeFiles/firstVersion.dir/MultMatrix/matrix.cpp.o: ../MultMatrix/types.hpp
 
 CMakeFiles/firstVersion.dir/main.cpp.o: ../Draw.h
+CMakeFiles/firstVersion.dir/main.cpp.o: ../GaussNewton.h
 CMakeFiles/firstVersion.dir/main.cpp.o: ../IsohronDerivative.h
 CMakeFiles/firstVersion.dir/main.cpp.o: ../MultMatrix/matrix.hpp
 CMakeFiles/firstVersion.dir/main.cpp.o: ../MultMatrix/types.hpp

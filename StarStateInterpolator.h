@@ -195,14 +195,14 @@ class StarStateInterpolator{
     void clean(std::ofstream& toF, std::ifstream& fromF, std::string path){
         std::string tmp;
         std::string result;
-        const char del = '\0';
+        const char del = '\n';
         while(!fromF.eof()){
             getline(fromF, tmp, del);
-            if(howMuchSpaces(tmp)!=7){
+            if(howMuchSpaces(tmp)<6){
                 continue;
             }
             else{
-                tmp.append("\0");
+                tmp.append("\n");
                 result.append(tmp);
             }
         }
@@ -258,6 +258,9 @@ public:
         fromFileS2.close();
         fromFileS38.close();
         fromFileS55.close();
+        toFileS2.close();
+        toFileS38.close();
+        toFileS55.close();
 
     }
 
@@ -278,7 +281,7 @@ public:
                 toFileS2 << objects->dY()/8107.55245;
                 toFileS2<< " ";
                 toFileS2 << objects->dZ()/8107.55245;
-                toFileS2 << "\n" << '\0';
+                toFileS2 << "\n";
                 break;
             case 38:
                 toFileS38 << h;
@@ -294,7 +297,7 @@ public:
                 toFileS38 << objects->dY()/8107.55245;
                 toFileS38<< " ";
                 toFileS38 << objects->dZ()/8107.55245;
-                toFileS38 << "\n" << '\0';
+                toFileS38 << "\n";
                 break;
             case 55:
                 toFileS55 << h;
@@ -310,7 +313,7 @@ public:
                 toFileS55 << objects->dY()/8107.55245;
                 toFileS55<< " ";
                 toFileS55 << objects->dZ()/8107.55245;
-                toFileS55 << "\n" << '\0';
+                toFileS55 << "\n";
                 break;
             default:
                 return;

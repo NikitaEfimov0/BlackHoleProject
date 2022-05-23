@@ -85,6 +85,9 @@
 		<Unit filename="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/Draw.h">
 			<Option target="firstVersion"/>
 		</Unit>
+		<Unit filename="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/GaussNewton.h">
+			<Option target="firstVersion"/>
+		</Unit>
 		<Unit filename="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/IsohronDerivative.h">
 			<Option target="firstVersion"/>
 		</Unit>

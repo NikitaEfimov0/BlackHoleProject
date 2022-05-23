@@ -10,6 +10,7 @@
 #include "Draw.h"
 #include "StarStateInterpolator.h"
 #include "IsohronDerivative.h"
+#include "GaussNewton.h"
 const double G = 0.01720209895;
 const double mBlackHole = G*G*4000000;
 const double PI = 4*atan(1.);
@@ -32,7 +33,6 @@ void derivative(std::vector<double>X, std::vector<double>&Xdot, IsohronDerivativ
     Xdot[3] =- X[0]*((mBlackHole)/(pow(norm(X[0], X[1], X[2], 0, 0, 0), 3)));
     Xdot[4] =- X[1]*((mBlackHole)/(pow(norm(X[0], X[1], X[2], 0, 0, 0), 3)));
     Xdot[5] =- X[2]*((mBlackHole)/(pow(norm(X[0], X[1], X[2], 0, 0, 0), 3)));
-    isohronDerivative.updateMatrix(X[0], X[1], X[2], m);
     Xdot[6] = X[9];
     Xdot[7] = X[10];
     Xdot[8] = X[11];
@@ -102,7 +102,7 @@ void RK4(std::vector<StarObject*>stellarObjects, IsohronDerivative isohronDeriva
         system[i]+=(h/6*(k1[i]+2*k2[i]+2*k3[i]+k4[i]));
     }
     updateStates(stellarObjects, system);
-
+    //isohronDerivative.updateMatrix(stellarObjects[0]->X(), stellarObjects[0]->Y(), stellarObjects[0]->Z(), mBlackHole);
 
 
 }
@@ -185,7 +185,7 @@ int main(){
         draw->setObjects(window, system);
         window.display();
         RK4(system, isohronDerivative);
-
+        //sleep(2);
         i += 23;
     }
    // isohronDerivative.printMatrixdXdP();
