@@ -26,10 +26,10 @@ public:
         BlackHoleMass = m;
         Beta = Matrix({{120.451454/8107.55245},
                        {-22.675722/8107.55245},
-                       {-104.524315},
-                       {-0.556251},
-                       {-3.6},
-                       {0.0},
+                       {-104.524315/8107.55245},
+                       {-0.556251/8107.55245},
+                       {-3.6/8107.55245},
+                       {0.0/8107.55245},
                        {BlackHoleMass}});
     }
 
@@ -104,8 +104,8 @@ public:
             }
             S2Original.close();
             for (int i = 0; i < rAll.size(); i++) {
-                Sra += (pow(rAll[i].second.first, 2)) / (Var(rAll[i].first, rAll[i].second.second).first);
-                Sdec += (pow(rAll[i].second.second, 2)) / (Var(rAll[i].first, rAll[i].second.second).second);
+                Sra += (pow(rAll[i].second.first, 2)) / (pow(Var(rAll[i].first, rAll[i].second.second).first, 2));
+                Sdec += (pow(rAll[i].second.second, 2)) / (pow(Var(rAll[i].first, rAll[i].second.second).second, 2));
 
             }
             if (Sra != 0 || Sdec != 0) {
@@ -119,6 +119,8 @@ public:
             S2Original.close();
             S38Original.close();
             S55Original.close();
+            rAll.clear();
+            varAll.clear();
         }
     }
 
@@ -130,8 +132,22 @@ public:
         Matrix W = Matrix(66, 66);
         initiateW(W, varAll);
         initiateA(A, dGdX);
+        Matrix At = Matrix(transpose(A));
+//        At.DebugPrint();
+//        std::cout<<"\n\n\n";
+//        W.DebugPrint();
+//        std::cout<<"\n\n\n";
+        Matrix tmp = At*W;
+//        tmp.DebugPrint();
+//        std::cout<<"\n\n\n";
 
-        Matrix newBeta = Matrix(Beta - (inversion(transpose(A)*W*A)* AtWrBeta(A, W)));
+        Matrix AtWA = inversion(At*W*A);
+        Matrix AWB = AtWrBeta(A, W);
+        Matrix multTMP = AtWA*AWB;
+//        multTMP.DebugPrint();
+        //At.DebugPrint();
+        Matrix newBeta = Matrix(Beta - (AtWA*AWB));
+//        std::cout<<"\n\n\n";
         newBeta.DebugPrint();
         Beta = Matrix(newBeta);
         updateAndRestart(Beta);
@@ -142,6 +158,10 @@ public:
         SolvingSystem solvingSystem = SolvingSystem();
         B.data[0][0]*=8107.55245;
         B.data[1][0]*=8107.55245;
+        B.data[2][0]*=8107.55245;
+        B.data[3][0]*=8107.55245;
+        B.data[4][0]*=8107.55245;
+        B.data[5][0]*=8107.55245;
         solvingSystem.start(B);
     }
 
@@ -267,7 +287,7 @@ public:
 
 
     Matrix transpose(Matrix m){
-        Matrix result(m.GetCols(), m.GetRows());
+        Matrix result(m.GetRows(), m.GetCols());
         for (int i = 0; i < m.GetRows(); i++){
             for (int j = 0; j < m.GetCols(); j++){
                 result.data[j][i] = m.data[i][j];
@@ -292,30 +312,41 @@ public:
     void initiateW(Matrix &W, std::vector<std::pair<double, double>>vAll){
         static int count = 0;
         static int shift = 0;
+        for(int i = 0; i < vAll.size(); i++){
+            std::cout<<"RA: "<<vAll[i].first<<" Dec: "<<vAll[i].second<<"\n";
+        }
+        int iter = 0;
         int decOrRa = 0;
-        for(int i = 0; i < 66; i++){
-
+        for(int i = 0; i < 66; i+=2){
+//            for(int j = 0; j < 66; j++){
+//                if(count!=1 && shift == j) {
+//                    if(decOrRa == 0) {
+//                        W.data[i][j] = double(1.0/vAll[iter].first);
+//                        decOrRa = 1;
+//                    }
+//                    else {
+//                        W.data[i][j] = double(1.0/vAll[iter].second);
+//                        decOrRa = 0;
+//                    }
+//                    count++;
+//                    shift++;
+//                }
+//                else{
+//                    W.data[i][j] = 0.0f;
+//                }
+//            }
+//            if(count == 1){
+//               //W.DebugPrint();
+//                //std::cout<<"\n\n";
+//                iter++;
+//                count = 0;
+//            }
             for(int j = 0; j < 66; j++){
-                if(count<2 && shift == j) {
-                    if(decOrRa == 0) {
-                        W.data[i][j] = vAll[i].first;
-                        decOrRa = 1;
-                    }
-                    else {
-                        W.data[i][j] = vAll[i].second;
-                        decOrRa = 0;
-                    }
-                    count++;
-                    if(count == 2){
-                        shift++;
-                    }
-                }
+                W.data[i][j] = 0.0f;
+                W.data[i+1][j] = 0.0f;
             }
-            if(count == 2){
-               //W.DebugPrint();
-                //std::cout<<"\n\n";
-                count = 0;
-            }
+            W.data[i][i] = double(1.0/pow(vAll[i/2].first, 2));
+            W.data[i+1][i+1] = double(1.0/pow(vAll[i/2].second, 2));
         }
 
     }
@@ -325,12 +356,13 @@ public:
     }
 
     void test(){
-        Matrix A = Matrix({{1, 0, 0, 0},{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}});
+        Matrix A = Matrix({{2, 0, 3, 0},{0, 1, 0, 0}, {0, 9, 1, 0}});
         Matrix B = Matrix(A);
-        transpose(B);
+        B = transpose(B);
         B.DebugPrint();
-        Matrix C = Matrix(A);
-        inversion(C);
+        std::cout<<"\n";
+        Matrix C = Matrix({{2, 0, 3}, {0, 1, 0}, {0, 9, 1}});
+        C = inversion(C);
         C.DebugPrint();
     }
 
