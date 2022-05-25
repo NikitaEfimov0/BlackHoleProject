@@ -22,7 +22,7 @@ double norm(double x1, double y1, double z1, double  x2, double y2, double z2){
 }
 
 
-void derivative(std::vector<double>X, std::vector<double>&Xdot, IsohronDerivative *isohronDerivative){
+void derivative(std::vector<double>X, std::vector<double>&Xdot, IsohronDerivative *isohronDerivative, Matrix& dXdPNew, Matrix &dXdP){
     double m = mBlackHole;
     for(int i = 0; i < X.size(); i++){
         Xdot.push_back(0);
@@ -46,15 +46,28 @@ void derivative(std::vector<double>X, std::vector<double>&Xdot, IsohronDerivativ
     Xdot[16] =- X[13]*((mBlackHole)/(pow(norm(X[12], X[13], X[14], 0, 0, 0), 3)));
     Xdot[17] =- X[14]*((mBlackHole)/(pow(norm(X[12], X[13], X[14], 0, 0, 0), 3)));
 
-    isohronDerivative->updateMatrix(X[0], X[1], X[2], mBlackHole);
+    isohronDerivative->updateMatrix(X[0], X[1], X[2], mBlackHole, dXdP);
+    dXdPNew = Matrix(isohronDerivative->dXdPRes);
 }
 
-void set_tmp(std::vector<double>&tmp, std::vector<double>state, std::vector<double>k, double h)
+void set_tmp(std::vector<double>&tmp, std::vector<double>state, std::vector<double>k, double h, Matrix& dXdP, Matrix& kM, Matrix& tmpM)
 {
     for(int i = 0; i < state.size(); i++)
     {
         tmp[i] = (state[i]+h/2*k[i]);
     }
+
+//    dXdP.DebugPrint();
+//    std::cout<<"\n";
+//    kM.DebugPrint();
+
+    for(int i = 0; i < dXdP.GetRows(); i++){
+        for(int  j = 0; j < dXdP.GetCols(); j++){
+            tmpM.data[i][j] = dXdP.data[i][j]+h/2*kM.data[i][j];
+        }
+    }
+
+
 }
 
 
@@ -71,8 +84,8 @@ void updateStates(std::vector<StarObject*>&stellarObjects, std::vector<double>sy
     }
 }
 
-void RK4(std::vector<StarObject*>stellarObjects, IsohronDerivative *isohronDerivative){
-    std::vector<double>system;
+void RK4(std::vector<StarObject*>stellarObjects, IsohronDerivative *isohronDerivative, Matrix &dXdP){;
+std::vector<double>system;
     std::vector<double>mass;
     double h = 10;
     std::vector<double>tmp;
@@ -90,19 +103,28 @@ void RK4(std::vector<StarObject*>stellarObjects, IsohronDerivative *isohronDeriv
         tmp.push_back(0);
     }
     std::vector<double>k1, k2, k3, k4;
-    derivative(system, k1, isohronDerivative);
-    set_tmp(tmp, system, k1, h);
-    derivative(tmp, k2, isohronDerivative);
+    Matrix kM1 = Matrix(7, 6), kM2= Matrix(7, 6), kM3= Matrix(7, 6), kM4= Matrix(7, 6), tmpM = Matrix(7, 6);
+    derivative(system, k1, isohronDerivative, kM1, dXdP);
+    set_tmp(tmp, system, k1, h, dXdP, kM1, tmpM);
+    derivative(tmp, k2, isohronDerivative, kM2, kM1);
 
-    set_tmp(tmp, system, k2, h);
-    derivative(tmp, k3, isohronDerivative);
+    set_tmp(tmp, system, k2, h, dXdP, kM2, tmpM);
+    derivative(tmp, k3, isohronDerivative, kM3, kM2);
 
-    set_tmp(tmp, system, k3, 2*h);
-    derivative(tmp, k4, isohronDerivative);
-    isohronDerivative->dXdPRes.DebugPrint();
+    set_tmp(tmp, system, k3, 2*h, dXdP, kM3, tmpM);
+    derivative(tmp, k4, isohronDerivative, kM4, kM3);
+    //isohronDerivative->dXdPRes.DebugPrint();
     for(int i = 0; i < system.size(); i++){
         system[i]+=(h/6*(k1[i]+2*k2[i]+2*k3[i]+k4[i]));
     }
+
+    for(int i = 0; i < dXdP.GetRows(); i++){
+        for(int j = 0; j < dXdP.GetCols(); j++){
+            dXdP.data[i][j]+=(h/6*(kM1.data[i][j]+2*kM2.data[i][j]+2*kM3.data[i][j]+kM4.data[i][j]));
+        }
+    }
+    isohronDerivative->dXdPRes = Matrix(dXdP);
+    isohronDerivative->dXdPRes.DebugPrint();
     updateStates(stellarObjects, system);
 
 
@@ -136,9 +158,17 @@ void projection(StarObject* object ,double OMEGA, double i ){
     object->update(s);
 }
 
-void initiation(std::vector<StarObject*>&s){
+void initiation(std::vector<StarObject*>&s, Matrix& dXdP){
     double Omega2 = (240.50*PI)/180, Omega55 = (129.9*PI)/180, Omega38 = (101.8*PI)/180;
     double i2 = (136.78*PI)/180, i38 = (166.22*PI)/180, i55 = (141.7*PI)/180;
+
+    dXdP = Matrix({
+        {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,   0.0f},
+        {0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,   0.0f},
+        {0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,   0.0f},
+        {0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,   0.0f},
+        {0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,   0.0f},
+        {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,   0.0f}});
 
 
     s.push_back(new StarObject(  120.451454,  -22.675722,       -104.524315,      -0.556251   ,      -3.6, 0.0, (14*2*pow(10, 30))));
@@ -163,8 +193,9 @@ void initiation(std::vector<StarObject*>&s){
 
 int main(){
     IsohronDerivative isohronDerivative = IsohronDerivative();
+    Matrix dXdP = Matrix(7, 6);
     std::vector<StarObject*> system;
-    initiation(system);
+    initiation(system, dXdP);
     sf::Clock loop_timer;
     Draw* draw = new Draw(system);
     StarStateInterpolator* interp = new StarStateInterpolator();
@@ -186,7 +217,7 @@ int main(){
         window.clear();
         draw->setObjects(window, system);
         window.display();
-        RK4(system, &isohronDerivative);
+        RK4(system, &isohronDerivative, dXdP);
         //sleep(2);
         isohronDerivative.save(i);
         i += 2;
@@ -199,6 +230,7 @@ int main(){
     GaussNewton gaussNewton = GaussNewton(mBlackHole/(G*G));
     interp->interpolation(2004.580, 55);
 
-   gaussNewton.findBlackHoleMass(interp, isohronDerivative);
+   //gaussNewton.findBlackHoleMass(interp, isohronDerivative);
+   gaussNewton.test();
     return 0;
 }

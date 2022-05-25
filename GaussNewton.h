@@ -134,10 +134,10 @@ public:
     }
 
     void updateAndRestart(Matrix &B){
-        SolvingSystem solvingSystem = SolvingSystem();
-        B.data[0][0]*=8107.55245;
-        B.data[1][0]*=8107.55245;
-        solvingSystem.start(B);
+//        SolvingSystem solvingSystem = SolvingSystem();
+//        B.data[0][0]*=8107.55245;
+//        B.data[1][0]*=8107.55245;
+//        solvingSystem.start(B);
     }
 
 
@@ -317,5 +317,16 @@ public:
     std::pair<double, double> ri(std::pair<double, double>y, std::pair<double, double>g){
         return std::pair<double, double>(y.first-g.first, y.second-g.second);
     }
+
+    void test(){
+        Matrix A = Matrix({{1, 0, 0, 0},{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}});
+        Matrix B = Matrix(A);
+        transpose(B);
+        B.DebugPrint();
+        Matrix C = Matrix(A);
+        inversion(C);
+        C.DebugPrint();
+    }
+
 };
 #endif //FIRSTVERSION_GAUSSNEWTON_H

@@ -54,7 +54,7 @@ public:
         Xdot[16] =- X[13]*((mBlackHole)/(pow(norm(X[12], X[13], X[14], 0, 0, 0), 3)));
         Xdot[17] =- X[14]*((mBlackHole)/(pow(norm(X[12], X[13], X[14], 0, 0, 0), 3)));
 
-        isohronDerivative->updateMatrix(X[0], X[1], X[2], mBlackHole);
+        //isohronDerivative->updateMatrix(X[0], X[1], X[2], mBlackHole, );
     }
 
     void set_tmp(std::vector<double>&tmp, std::vector<double>state, std::vector<double>k, double h)

@@ -21,15 +21,7 @@ public:
         return (-z)/(pow(sqrt(x*x+y*y+z*z), 3));;
     }
 
-    void updateMatrix(double x, double y, double z, double m){
-        static Matrix dXdP = Matrix({
-            {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,   0.0f},
-            {0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,   0.0f},
-            {0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,   0.0f},
-            {0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,   0.0f},
-            {0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,   0.0f},
-            {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,   0.0f}});
-
+    void updateMatrix(double x, double y, double z, double m, Matrix dXdP){
 
         Matrix dFdGm = Matrix({{0, 0, 0, 0, 0, 0, 0},
                                {0, 0, 0, 0, 0, 0, 0},
@@ -39,23 +31,24 @@ public:
                                {0, 0, 0, 0, 0, 0, dvzdm(x, y, z, m)}});
 
 
-        std::cout<<"before:\n";
-        dXdP.DebugPrint();
-        std::cout<<"\n";
+
+//        dXdP.DebugPrint();
+//        std::cout<<"\n*\n";
         Matrix dFdX = Matrix({
                 {0.0f,                 0.0f,                 0.0f,        1.0f, 0.0f, 0.0f},
                 {0.0f,                 0.0f,                 0.0f,        0.0f, 1.0f, 0.0f},
                 {0.0f,                 0.0f,                 0.0f,        0.0f, 0.0f, 1.0f},
-                {dvxdx(x, y, z, m), dvxdy(x, y, z, m), dvxdz(x, y, z, m), 1.0f, 0.0f, 0.0f},
-                {dvydx(x, y, z, m), dvydy(x, y, z, m), dvydz(x, y, z, m), 0.0f, 1.0f, 0.0f},
-                {dvzdx(x, y, z, m), dvzdy(x, y, z, m), dvzdz(x, y, z, m), 0.0f, 0.0f, 1.0f}});
-        dFdX.DebugPrint();
+                {dvxdx(x, y, z, m), dvxdy(x, y, z, m), dvxdz(x, y, z, m), 0.0f, 0.0f, 0.0f},
+                {dvydx(x, y, z, m), dvydy(x, y, z, m), dvydz(x, y, z, m), 0.0f, 0.0f, 0.0f},
+                {dvzdx(x, y, z, m), dvzdy(x, y, z, m), dvzdz(x, y, z, m), 0.0f, 0.0f, 0.0f}});
+//        dFdX.DebugPrint();
         dXdP = dFdGm+dFdX*dXdP;
-        std::cout<<"after:\n";
+//        std::cout<<"\n=\n";
 
-        std::cout<<std::endl;
+
         dXdPRes = Matrix(dXdP);
-        dXdPRes.DebugPrint();
+//        dXdPRes.DebugPrint();
+//        std::cout<<std::endl;
         //dXdPRes.DebugPrint();
     }
 
