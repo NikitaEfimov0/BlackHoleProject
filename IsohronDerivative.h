@@ -98,9 +98,9 @@ public:
 
 
     void save(int t){
-        dXdPRes.DebugPrint();
+        //dXdPRes.DebugPrint();
         allDeriv.push_back(std::pair<int, Matrix>(t, dXdPRes));
-        std::cout<<allDeriv.end()->second.GetRows()<<" "<<allDeriv.end()->second.GetCols();
+        //std::cout<<allDeriv.end()->second.GetRows()<<" "<<allDeriv.end()->second.GetCols();
         //allDeriv.end()->second.DebugPrint();
     }
 
@@ -108,13 +108,13 @@ public:
         for(int i = 0; i < allDeriv.size(); i++){
             if(abs(allDeriv[i].first-t)<=2){
                 Matrix Xt0(allDeriv[i].second);
-                Xt0.DebugPrint();
+                //Xt0.DebugPrint();
                 Matrix Xt1(allDeriv[i+1].second);
-                Xt1.DebugPrint();
+                //Xt1.DebugPrint();
 
                 Matrix X = Xt0*(double)((double)(allDeriv[i+1].first-t)/(allDeriv[i+1].first-allDeriv[i].first))+
                            Xt1*((double)(t-allDeriv[i].first)/(allDeriv[i+1].first-allDeriv[i].first));
-                X.DebugPrint();
+               // X.DebugPrint();
                 return X;
             }
         }

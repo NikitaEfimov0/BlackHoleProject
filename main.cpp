@@ -124,7 +124,7 @@ std::vector<double>system;
         }
     }
     isohronDerivative->dXdPRes = Matrix(dXdP);
-    isohronDerivative->dXdPRes.DebugPrint();
+   // isohronDerivative->dXdPRes.DebugPrint();
     updateStates(stellarObjects, system);
 
 
@@ -221,16 +221,18 @@ int main(){
         //sleep(2);
         isohronDerivative.save(i);
         i += 2;
-        if(i == 3000)
-            break;
+        if(i == 3000){
+            window.clear();
+            window.close();
+        }
     }
    //isohronDerivative.printMatrixdXdP();
     std::cout<<"\n\n\n";
     interp->cleanLast();
     GaussNewton gaussNewton = GaussNewton(mBlackHole/(G*G));
-    interp->interpolation(2004.580, 55);
+    //interp->interpolation(2004.580, 55);
 
-   //gaussNewton.findBlackHoleMass(interp, isohronDerivative);
-   gaussNewton.test();
+   gaussNewton.findBlackHoleMass(interp, isohronDerivative);
+   //gaussNewton.test();
     return 0;
 }

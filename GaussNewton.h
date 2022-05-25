@@ -22,9 +22,7 @@ class GaussNewton{
 public:
     GaussNewton(double m){
 
-        S2Original.open("../Data/S2Original.dat");
-        S38Original.open("../Data/S38Original.dat");
-        S55Original.open("../Data/S55Original.dat");
+
         BlackHoleMass = m;
         Beta = Matrix({{120.451454/8107.55245},
                        {-22.675722/8107.55245},
@@ -59,6 +57,9 @@ public:
 
     bool findBlackHoleMass(StarStateInterpolator *starStateInterpolator, IsohronDerivative isohronDerivative){
         while(true) {
+            S2Original.open("../Data/S2Original.dat");
+            S38Original.open("../Data/S38Original.dat");
+            S55Original.open("../Data/S55Original.dat");
             isohronDerivative1 = isohronDerivative;
             double Sdec = 0, Sra = 0;
             std::string originalValuesInIMoment;
@@ -115,6 +116,9 @@ public:
                 std::cout << BlackHoleMass;
                 break;
             }
+            S2Original.close();
+            S38Original.close();
+            S55Original.close();
         }
     }
 
@@ -129,15 +133,16 @@ public:
 
         Matrix newBeta = Matrix(Beta - (inversion(transpose(A)*W*A)* AtWrBeta(A, W)));
         newBeta.DebugPrint();
-        updateAndRestart(newBeta);
+        Beta = Matrix(newBeta);
+        updateAndRestart(Beta);
 
     }
 
     void updateAndRestart(Matrix &B){
-//        SolvingSystem solvingSystem = SolvingSystem();
-//        B.data[0][0]*=8107.55245;
-//        B.data[1][0]*=8107.55245;
-//        solvingSystem.start(B);
+        SolvingSystem solvingSystem = SolvingSystem();
+        B.data[0][0]*=8107.55245;
+        B.data[1][0]*=8107.55245;
+        solvingSystem.start(B);
     }
 
 
@@ -254,20 +259,21 @@ public:
             i+=2;
             iter++;
         }
-        std::cout<<"A:";
-        A.DebugPrint();
-        std::cout<<"\n\n";
+//        std::cout<<"A:";
+//        A.DebugPrint();
+//        std::cout<<"\n\n";
 
     }
 
 
     Matrix transpose(Matrix m){
-        Matrix result(m.GetRows(), m.GetCols());
+        Matrix result(m.GetCols(), m.GetRows());
         for (int i = 0; i < m.GetRows(); i++){
             for (int j = 0; j < m.GetCols(); j++){
                 result.data[j][i] = m.data[i][j];
             }
         }
+       // result.DebugPrint();
         return result;
     }
 
