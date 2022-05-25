@@ -169,7 +169,7 @@ public:
     void initiation(std::vector<StarObject*>&s, Matrix &B, Matrix& dXdP){
         double Omega2 = (240.50*PI)/180, Omega55 = (129.9*PI)/180, Omega38 = (101.8*PI)/180;
         double i2 = (136.78*PI)/180, i38 = (166.22*PI)/180, i55 = (141.7*PI)/180;
-
+        mBlackHole*=B.data[6][0];
         dXdP = Matrix({
                               {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,   0.0f},
                               {0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,   0.0f},
@@ -179,7 +179,7 @@ public:
                               {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,   0.0f}});
 
 
-        s.push_back(new StarObject(  120.451454,  -22.675722,       -104.524315,      -0.556251   ,      -3.6, 0.0, (14*2*pow(10, 30))));
+        s.push_back(new StarObject(  B.data[0][0], B.data[1][0], B.data[2][0], B.data[3][0], B.data[4][0], B.data[5][0], 0));
 
         projection(s[s.size()-1], Omega2, i2);
 
@@ -201,9 +201,9 @@ public:
         StarStateInterpolator* interp = new StarStateInterpolator();
         int i = 0;
         while (i!=3000) {
-            interp->addS2Data(system[0], i, 2);
-            interp->addS2Data(system[1], i, 38);
-            interp->addS2Data(system[2], i, 55);
+            interp->addData(system[0], i, 2);
+            interp->addData(system[1], i, 38);
+            interp->addData(system[2], i, 55);
             RK4(system, &isohronDerivative, dXdP);
             isohronDerivative.save(i);
             i += 2;

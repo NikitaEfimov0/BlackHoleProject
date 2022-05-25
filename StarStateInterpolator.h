@@ -288,6 +288,62 @@ public:
 //    }
 
 
+
+    void addData(StarObject* objects, int h, int n){
+        switch (n) {
+            case 2:
+                toFileS2 << h;
+                toFileS2 << " ";
+                toFileS2 << objects->X();
+                toFileS2 << " ";
+                toFileS2 << objects->Y();
+                toFileS2 << " ";
+                toFileS2 << objects->Z();
+                toFileS2<< " ";
+                toFileS2 << objects->dX();
+                toFileS2<< " ";
+                toFileS2 << objects->dY();
+                toFileS2<< " ";
+                toFileS2 << objects->dZ();
+                toFileS2 << "\n";
+                break;
+            case 38:
+                toFileS38 << h;
+                toFileS38 << " ";
+                toFileS38 << objects->X();
+                toFileS38 << " ";
+                toFileS38 << objects->Y() ;
+                toFileS38 << " ";
+                toFileS38 << objects->Z();
+                toFileS38 << " ";
+                toFileS38 << objects->dX();
+                toFileS38<< " ";
+                toFileS38 << objects->dY();
+                toFileS38<< " ";
+                toFileS38 << objects->dZ();
+                toFileS38 << "\n";
+                break;
+            case 55:
+                toFileS55 << h;
+                toFileS55 << " ";
+                toFileS55 << objects->X();
+                toFileS55 << " ";
+                toFileS55 << objects->Y();
+                toFileS55 << " ";
+                toFileS55 << objects->Z();
+                toFileS55 << " ";
+                toFileS55 << objects->dX();
+                toFileS55<< " ";
+                toFileS55 << objects->dY();
+                toFileS55<< " ";
+                toFileS55 << objects->dZ();
+                toFileS55 << "\n";
+                break;
+            default:
+                return;
+
+        }
+    }
     void addS2Data(StarObject* objects, int h, int n){
         switch (n) {
             case 2:
@@ -299,11 +355,11 @@ public:
                 toFileS2 << " ";
                 toFileS2 << objects->Z() / 8107.55245;
                 toFileS2<< " ";
-                toFileS2 << objects->dX()/8107.55245;
+                toFileS2 << objects->dX();
                 toFileS2<< " ";
-                toFileS2 << objects->dY()/8107.55245;
+                toFileS2 << objects->dY();
                 toFileS2<< " ";
-                toFileS2 << objects->dZ()/8107.55245;
+                toFileS2 << objects->dZ();
                 toFileS2 << "\n";
                 break;
             case 38:
@@ -315,11 +371,11 @@ public:
                 toFileS38 << " ";
                 toFileS38 << objects->Z() / 8107.55245;
                 toFileS38 << " ";
-                toFileS38 << objects->dX()/ 8107.55245;
+                toFileS38 << objects->dX();
                 toFileS38<< " ";
-                toFileS38 << objects->dY()/ 8107.55245;
+                toFileS38 << objects->dY();
                 toFileS38<< " ";
-                toFileS38 << objects->dZ()/ 8107.55245;
+                toFileS38 << objects->dZ();
                 toFileS38 << "\n";
                 break;
             case 55:
@@ -331,11 +387,11 @@ public:
                 toFileS55 << " ";
                 toFileS55 << objects->Z() / 8107.55245;
                 toFileS55 << " ";
-                toFileS55 << objects->dX()/8107.55245;
-                toFileS55<< " ";
-                toFileS55 << objects->dY()/8107.55245;
-                toFileS55<< " ";
-                toFileS55 << objects->dZ()/8107.55245;
+                toFileS38 << objects->dX();
+                toFileS38<< " ";
+                toFileS38 << objects->dY();
+                toFileS38<< " ";
+                toFileS38 << objects->dZ();
                 toFileS55 << "\n";
                 break;
             default:

@@ -18,6 +18,7 @@ class GaussNewton{
     std::vector<std::pair<double, double>>varAll;
     IsohronDerivative isohronDerivative1;
     Matrix Beta = Matrix(1, 7);
+    int flag = 0;
     //StarStateInterpolator starStateInterpolator;
 public:
     GaussNewton(double m){
@@ -26,10 +27,10 @@ public:
         BlackHoleMass = m;
         Beta = Matrix({{120.451454/8107.55245},
                        {-22.675722/8107.55245},
-                       {-104.524315/8107.55245},
-                       {-0.556251/8107.55245},
-                       {-3.6/8107.55245},
-                       {0.0/8107.55245},
+                       {-104.524315},
+                       {-0.556251},
+                       {-3.6},
+                       {0.0},
                        {BlackHoleMass}});
     }
 
@@ -156,12 +157,10 @@ public:
 
     void updateAndRestart(Matrix &B){
         SolvingSystem solvingSystem = SolvingSystem();
-        B.data[0][0]*=8107.55245;
-        B.data[1][0]*=8107.55245;
-        B.data[2][0]*=8107.55245;
-        B.data[3][0]*=8107.55245;
-        B.data[4][0]*=8107.55245;
-        B.data[5][0]*=8107.55245;
+//        if(flag == 0) {
+//            B.data[0][0] *= 8107.55245;
+//            B.data[1][0] *= 8107.55245;
+//        }
         solvingSystem.start(B);
     }
 
