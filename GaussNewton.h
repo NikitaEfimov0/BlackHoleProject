@@ -104,8 +104,8 @@ public:
             }
             S2Original.close();
             for (int i = 0; i < rAll.size(); i++) {
-                Sra += (pow(rAll[i].second.first, 2)) / (pow(Var(rAll[i].first, rAll[i].second.second).first, 2));
-                Sdec += (pow(rAll[i].second.second, 2)) / (pow(Var(rAll[i].first, rAll[i].second.second).second, 2));
+                Sra += (pow(rAll[i].second.first, 2)) / (Var(rAll[i].first, rAll[i].second.second).first);
+                Sdec += (pow(rAll[i].second.second, 2)) / (Var(rAll[i].first, rAll[i].second.second).second);
 
             }
             if (Sra != 0 || Sdec != 0) {

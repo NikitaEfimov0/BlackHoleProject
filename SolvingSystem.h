@@ -166,7 +166,7 @@ public:
         object->update(s);
     }
 
-    void initiation(std::vector<StarObject*>&s, Matrix& dXdP){
+    void initiation(std::vector<StarObject*>&s, Matrix &B, Matrix& dXdP){
         double Omega2 = (240.50*PI)/180, Omega55 = (129.9*PI)/180, Omega38 = (101.8*PI)/180;
         double i2 = (136.78*PI)/180, i38 = (166.22*PI)/180, i55 = (141.7*PI)/180;
 
@@ -196,7 +196,7 @@ public:
         IsohronDerivative isohronDerivative = IsohronDerivative();
         std::vector<StarObject*> system;
         Matrix dXdP = Matrix(7, 6);
-        initiation(system, B);
+        initiation(system, B, dXdP);
 
         StarStateInterpolator* interp = new StarStateInterpolator();
         int i = 0;
