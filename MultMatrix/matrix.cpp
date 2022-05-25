@@ -162,14 +162,17 @@ Matrix Matrix::operator- ( const Matrix& right ) {
     Matrix C( m, n );
 	if ( m != right.m || n != right.n ) {
         C.error |= ME_Dimensions;
+		puts( "Error: dimensions mismatch in sub (A - B)." );
 	} else {
 
         for ( u32 i = 0; i < n; i++ )
             for ( u32 j = 0; j < m; j++ )
-				C.data[ i ][ j ] = data[ i ][ j ] - right.data[ i ][ j ];
+                C.data[ i ][ j ] = data[ i ][ j ] - right.data[ i ][ j ];
 
+		return C;
 	}
-    return C;
+
+    return Matrix(*this);
 }
 
 Matrix Matrix::operator* ( const Matrix& right ) {
