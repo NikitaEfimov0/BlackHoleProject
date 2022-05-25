@@ -97,6 +97,9 @@
 		<Unit filename="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/MultMatrix/matrix.hpp">
 			<Option target="firstVersion"/>
 		</Unit>
+		<Unit filename="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/SolvingSystem.h">
+			<Option target="firstVersion"/>
+		</Unit>
 		<Unit filename="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/StarObject.h">
 			<Option target="firstVersion"/>
 		</Unit>

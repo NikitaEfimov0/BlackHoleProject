@@ -1,9 +1,8 @@
-#include <cstdio>
+#include <stdio.h>
 #include "matrix.hpp"
 #include "types.hpp"
-#include <cmath>
+#include <math.h>
 #include <iostream>
-
 Matrix::~Matrix() {
     for ( u32 i = 0; i < n; i++ )
 		delete[] data[ i ];
@@ -25,6 +24,21 @@ Matrix::Matrix( const Matrix& src ) {
         for ( u32 j = 0; j < m; j++ )
 			data[ i ][ j ] = src.data[ i ][ j ];
 }
+
+Matrix::Matrix( const Matrix&& src ) {
+        n = src.n;
+        m = src.m;
+
+        data = new double*[ n ];
+
+    for ( u32 i = 0; i < n; i++ )
+                data[ i ] = new double[ m ];
+
+    for ( u32 i = 0; i < n; i++ )
+        for ( u32 j = 0; j < m; j++ )
+                        data[ i ][ j ] = src.data[ i ][ j ];
+}
+
 
 
 Matrix::Matrix( u32 x, u32 y ) {
@@ -213,8 +227,7 @@ void Matrix::DebugPrint( void ) {
 		printf( " " );
 
         for ( u32 j = 0; j < m; j++ )
-			std::cout<<data[i][j]<<" ";
-
+            std::cout<<data[i][j]<<" ";
 		puts( "" ); // A newline.
 	}
 }
@@ -269,16 +282,3 @@ Matrix Matrix::RotateZ(float angle) {
     return res;
 }
 
-//Matrix *Matrix::operator=(Matrix& matrix) noexcept {
-//
-//    if ( this == &matrix )
-//        return this;
-//
-//    std::move(this, matrix)
-//
-//    for ( u32 i = 0; i < n; i++ )
-//        delete[] data[ i ];
-//
-//    delete[] data;
-//    return nullptr;
-//}

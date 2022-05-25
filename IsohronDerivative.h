@@ -6,9 +6,9 @@
 #define FIRSTVERSION_ISOHRONDERIVATIVE_H
 #include "MultMatrix/matrix.hpp"
 class IsohronDerivative{
+    std::vector<std::pair<int, Matrix>>allDeriv;
 public:
-
-
+    Matrix dXdPRes = Matrix(6, 7);
     double dvxdm(double x, double y, double z, double m) {
         return (-x)/(pow(sqrt(x*x+y*y+z*z), 3));
     }
@@ -22,6 +22,15 @@ public:
     }
 
     void updateMatrix(double x, double y, double z, double m){
+        static Matrix dXdP = Matrix({
+            {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,   0.0f},
+            {0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,   0.0f},
+            {0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,   0.0f},
+            {0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,   0.0f},
+            {0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,   0.0f},
+            {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,   0.0f}});
+
+
         Matrix dFdGm = Matrix({{0, 0, 0, 0, 0, 0, 0},
                                {0, 0, 0, 0, 0, 0, 0},
                                {0, 0, 0, 0, 0, 0, 0},
@@ -29,13 +38,7 @@ public:
                                {0, 0, 0, 0, 0, 0, dvydm(x, y, z, m)},
                                {0, 0, 0, 0, 0, 0, dvzdm(x, y, z, m)}});
 
-        static Matrix dXdP = Matrix({
-                       {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,   0.0f},
-                       {0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,   0.0f},
-                       {0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,   0.0f},
-                       {0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,   0.0f},
-                       {0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,   0.0f},
-                       {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,   0.0f}});
+
         std::cout<<"before:\n";
         dXdP.DebugPrint();
         std::cout<<"\n";
@@ -49,11 +52,12 @@ public:
         dFdX.DebugPrint();
         dXdP = dFdGm+dFdX*dXdP;
         std::cout<<"after:\n";
-        dXdP.DebugPrint();
+
         std::cout<<std::endl;
+        dXdPRes = Matrix(dXdP);
+        dXdPRes.DebugPrint();
+        //dXdPRes.DebugPrint();
     }
-
-
 
     //Производные ускорения по X
     double dvxdx(double x, double y, double z, double m){
@@ -100,7 +104,28 @@ public:
     }
 
 
+    void save(int t){
+        dXdPRes.DebugPrint();
+        allDeriv.push_back(std::pair<int, Matrix>(t, dXdPRes));
+        std::cout<<allDeriv.end()->second.GetRows()<<" "<<allDeriv.end()->second.GetCols();
+        //allDeriv.end()->second.DebugPrint();
+    }
 
+    Matrix interpolate(double t){
+        for(int i = 0; i < allDeriv.size(); i++){
+            if(abs(allDeriv[i].first-t)<=2){
+                Matrix Xt0(allDeriv[i].second);
+                Xt0.DebugPrint();
+                Matrix Xt1(allDeriv[i+1].second);
+                Xt1.DebugPrint();
+
+                Matrix X = Xt0*(double)((double)(allDeriv[i+1].first-t)/(allDeriv[i+1].first-allDeriv[i].first))+
+                           Xt1*((double)(t-allDeriv[i].first)/(allDeriv[i+1].first-allDeriv[i].first));
+                X.DebugPrint();
+                return X;
+            }
+        }
+    }
 
 
 
