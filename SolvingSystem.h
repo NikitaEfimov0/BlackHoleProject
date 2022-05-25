@@ -201,9 +201,9 @@ public:
         StarStateInterpolator* interp = new StarStateInterpolator();
         int i = 0;
         while (i!=3000) {
-            interp->addData(system[0], i, 2);
-            interp->addData(system[1], i, 38);
-            interp->addData(system[2], i, 55);
+            interp->addS2Data(system[0], i, 2);
+            interp->addS2Data(system[1], i, 38);
+            interp->addS2Data(system[2], i, 55);
             RK4(system, &isohronDerivative, dXdP);
             isohronDerivative.save(i);
             i += 2;

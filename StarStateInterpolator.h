@@ -267,36 +267,29 @@ public:
     }
 
 
-//    double norm(double x1, double y1, double z1, double  x2, double y2, double z2){
-//        return sqrt(pow((x1-x2), 2)+pow((y1-y2), 2)+pow((z1-z2), 2));
-//    }
-
-//    std::pair<double, double> toSpherical(double x, double y, double z){
-//
-//        double r = norm(x, y, z, 0, 0, 0);
-//        double Dec = asin(z / r);
-//
-//        double Ra;
-//
-//        if (y/r > 0){
-//            Ra = acos((x) / r) / cos(Dec);
-//        } else {
-//            Ra = 2 * M_PI - acos((x / r) / cos(Dec) );
-//        }
-//
-//        return std::pair<double, double>(Ra, Dec);
-//    }
+    double norm(double x1, double y1, double z1, double  x2, double y2, double z2){
+        return sqrt(pow((x1-x2), 2)+pow((y1-y2), 2)+pow((z1-z2), 2));
+    }
 
 
+
+    std::pair<double, double> toSpherical(double x, double y, double z){
+        double p = norm(x, y, z, 0, 0, 0);
+        double cosPhi = x/(sqrt(x*x+y*y));
+        double sinPhi = y/(sqrt(x*x+y*y));
+        double Teta = acos(z/p);
+        return std::pair<double, double>();
+    }
 
     void addData(StarObject* objects, int h, int n){
+
         switch (n) {
             case 2:
                 toFileS2 << h;
                 toFileS2 << " ";
-                toFileS2 << objects->X();
+                toFileS2 << objects->X()/8107.55245;
                 toFileS2 << " ";
-                toFileS2 << objects->Y();
+                toFileS2 << objects->Y()/8107.55245;
                 toFileS2 << " ";
                 toFileS2 << objects->Z();
                 toFileS2<< " ";
@@ -353,7 +346,7 @@ public:
                 toFileS2 << " ";
                 toFileS2 << objects->Y() / 8107.55245;
                 toFileS2 << " ";
-                toFileS2 << objects->Z() / 8107.55245;
+                toFileS2 << objects->Z();
                 toFileS2<< " ";
                 toFileS2 << objects->dX();
                 toFileS2<< " ";

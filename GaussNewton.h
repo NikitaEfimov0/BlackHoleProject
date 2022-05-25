@@ -77,18 +77,14 @@ public:
 
             Gi = starStateInterpolator->interpolation(splitedValuesOfOriginals[0], 2);
             rAll.push_back(std::pair<double, std::pair<double, double>>(splitedValuesOfOriginals[0],
-                                                                        ri(std::pair<double, double>(
-                                                                                splitedValuesOfOriginals[1],
-                                                                                splitedValuesOfOriginals[2]),
+                                                                        ri(std::pair<double, double>(splitedValuesOfOriginals[1],splitedValuesOfOriginals[2]),
                                                                            std::pair<double, double>(Gi[1], Gi[2]))));
 
-            varAll.push_back(Var(rAll[rAll.size() - 1].second.second, rAll[rAll.size() - 1].first));
+            varAll.push_back(Var(rAll[rAll.size() - 1].second.second, rAll[rAll.size() - 1].second.first));
             while (!S2Original.eof()) {
                 originalValuesInIMoment.clear();
                 splitedValuesOfOriginals.clear();
                 double numberInWhile;
-
-
                 getline(S2Original, originalValuesInIMoment, delim);
                 std::istringstream splitInWhile(originalValuesInIMoment);
 
@@ -96,18 +92,15 @@ public:
 
                 Gi = starStateInterpolator->interpolation(splitedValuesOfOriginals[0], 2);
                 rAll.push_back(std::pair<double, std::pair<double, double>>(splitedValuesOfOriginals[0],
-                                                                            ri(std::pair<double, double>(
-                                                                                    splitedValuesOfOriginals[1],
-                                                                                    splitedValuesOfOriginals[2]),
+                                                                            ri(std::pair<double, double>(splitedValuesOfOriginals[1],splitedValuesOfOriginals[2]),
                                                                                std::pair<double, double>(Gi[1],
                                                                                                          Gi[2]))));
-                varAll.push_back(Var(rAll[rAll.size() - 1].second.second, rAll[rAll.size() - 1].first));
+                varAll.push_back(Var(rAll[rAll.size() - 1].second.second, rAll[rAll.size() - 1].second.first));
             }
             S2Original.close();
             for (int i = 0; i < rAll.size(); i++) {
-                Sra += (pow(rAll[i].second.first, 2)) / (Var(rAll[i].first, rAll[i].second.second).first);
-                Sdec += (pow(rAll[i].second.second, 2)) / (Var(rAll[i].first, rAll[i].second.second).second);
-
+                Sra += (pow(rAll[i].second.first, 2)) / (Var(rAll[i].second.second, rAll[i].second.first).first);
+                Sdec += (pow(rAll[i].second.second, 2)) / (Var(rAll[i].second.second, rAll[i].second.first).second);
             }
             if (Sra != 0 || Sdec != 0) {
                 std::cout << std::endl;
@@ -134,21 +127,21 @@ public:
         initiateW(W, varAll);
         initiateA(A, dGdX);
         Matrix At = Matrix(transpose(A));
-//        At.DebugPrint();
-//        std::cout<<"\n\n\n";
-//        W.DebugPrint();
-//        std::cout<<"\n\n\n";
+        At.DebugPrint();
+        std::cout<<"\n\n\n";
+        W.DebugPrint();
+        std::cout<<"\n\n\n";
         Matrix tmp = At*W;
-//        tmp.DebugPrint();
-//        std::cout<<"\n\n\n";
+        tmp.DebugPrint();
+        std::cout<<"\n\n\n";
 
         Matrix AtWA = inversion(At*W*A);
         Matrix AWB = AtWrBeta(A, W);
         Matrix multTMP = AtWA*AWB;
-//        multTMP.DebugPrint();
+        multTMP.DebugPrint();
         //At.DebugPrint();
         Matrix newBeta = Matrix(Beta - (AtWA*AWB));
-//        std::cout<<"\n\n\n";
+        std::cout<<"\n\n\n";
         newBeta.DebugPrint();
         Beta = Matrix(newBeta);
         updateAndRestart(Beta);
@@ -157,53 +150,14 @@ public:
 
     void updateAndRestart(Matrix &B){
         SolvingSystem solvingSystem = SolvingSystem();
-//        if(flag == 0) {
-//            B.data[0][0] *= 8107.55245;
-//            B.data[1][0] *= 8107.55245;
-//        }
+
+            B.data[0][0] *= 8107.55245;
+            B.data[1][0] *= 8107.55245;
         solvingSystem.start(B);
     }
 
 
-//    Matrix CholeskyDecomposition(Matrix A)
-//    {
-//        Matrix L = Matrix(A.GetRows());
-//        for (int i = 0; i < A.GetRows(); i++)
-//        {; //L - треугольная матрица, поэтому в i-ой строке i+1 элементов
-//
-//            double temp;
-//            //Сначала вычисляем значения элементов слева от диагонального элемента,
-//            //так как эти значения используются при вычислении диагонального элемента.
-//            for (int j = 0; j < i; j++)
-//            {
-//                temp = 0;
-//                for (int k = 0; k < j; k++)
-//                {
-//                    temp += L.data[i][k] * L.data[j][k];
-//                }
-//                L.data[i][j] = (A.data[i][j] - temp) / L.data[j][j];
-//            }
-//
-//            //Находим значение диагонального элемента
-//            temp = A.data[i][i];
-//            for (int k = 0; k < i; k++)
-//            {
-//                temp -= L.data[i][k] * L.data[i][k];
-//            }
-//            L.data[i][i] = sqrt(temp);
-//        }
-//
-//        return L;
-//    }
 
-
-//    Matrix LyB(Matrix& L, Matrix &B){
-//        Matrix Y = Matrix(1, 7);
-//        double x, y, z, vx, vz, vy, my;
-//        x = B.data[0][0]/L.data[0][0];
-//        y = (B.data[1][0]-L.data[1][0]*x)/L.data[1][1];
-//        z = ()
-//    }
 
 
     Matrix inversion(Matrix A)
@@ -278,9 +232,6 @@ public:
             i+=2;
             iter++;
         }
-//        std::cout<<"A:";
-//        A.DebugPrint();
-//        std::cout<<"\n\n";
 
     }
 
@@ -292,7 +243,7 @@ public:
                 result.data[j][i] = m.data[i][j];
             }
         }
-       // result.DebugPrint();
+
         return result;
     }
 
@@ -314,38 +265,14 @@ public:
         for(int i = 0; i < vAll.size(); i++){
             std::cout<<"RA: "<<vAll[i].first<<" Dec: "<<vAll[i].second<<"\n";
         }
-        int iter = 0;
-        int decOrRa = 0;
         for(int i = 0; i < 66; i+=2){
-//            for(int j = 0; j < 66; j++){
-//                if(count!=1 && shift == j) {
-//                    if(decOrRa == 0) {
-//                        W.data[i][j] = double(1.0/vAll[iter].first);
-//                        decOrRa = 1;
-//                    }
-//                    else {
-//                        W.data[i][j] = double(1.0/vAll[iter].second);
-//                        decOrRa = 0;
-//                    }
-//                    count++;
-//                    shift++;
-//                }
-//                else{
-//                    W.data[i][j] = 0.0f;
-//                }
-//            }
-//            if(count == 1){
-//               //W.DebugPrint();
-//                //std::cout<<"\n\n";
-//                iter++;
-//                count = 0;
-//            }
+
             for(int j = 0; j < 66; j++){
                 W.data[i][j] = 0.0f;
                 W.data[i+1][j] = 0.0f;
             }
-            W.data[i][i] = double(1.0/pow(vAll[i/2].first, 2));
-            W.data[i+1][i+1] = double(1.0/pow(vAll[i/2].second, 2));
+            W.data[i][i] = double(1.0/(vAll[i/2].first));
+            W.data[i+1][i+1] = double(1.0/(vAll[i/2].second));
         }
 
     }
