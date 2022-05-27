@@ -25,13 +25,36 @@ public:
 
 
         BlackHoleMass = m;
-        Beta = Matrix({{120.451454/8107.55245},
-                       {-22.675722/8107.55245},
+        Beta = Matrix({{120.451454},
+                       {-22.675722},
                        {-104.524315},
                        {-0.556251},
                        {-3.6},
                        {0.0},
                        {BlackHoleMass}});
+    }
+
+    double getLen(double x, double y, double z){
+        return sqrt(x*x+y*y+z*z);
+    }
+
+    Matrix dGdXMatr(double x, double y, double z){
+        double sign = -1;
+        double dRadX, dRadY, dRadZ, dDecdX, dDecdY, dDecdZ;
+        double len = getLen(x, y, z);
+        double cosF = cos(asin(z/ len));
+        dRadX = sign*x*z/(sqrt(1-z*z/(len*len))*len*len*len);
+        dRadY = sign*x*z/(sqrt(1-z*z/(len*len))*len*len*len);
+        dRadZ = (pow(z, 3)-pow(z, 2))/((sqrt(1-pow(z, 2)/pow(len, 2))*pow(len, 3)));
+        if(y/len>0){
+            sign = 1;
+        }
+        dDecdX = sign*(-1*x*(z*dRadX-x*cosF/len)+len*cosF)/(pow(len, 2)*pow(cosF, 2)*sqrt(1-pow(x, 2)/(pow(len, 2)*pow(cosF, 2))));
+        dDecdY = sign*(-1*x*(z*dRadY-y*cosF/len)+len*cosF)/(pow(len, 2)*pow(cosF, 2)*sqrt(1-pow(x, 2)/(pow(len, 2)*pow(cosF, 2))));
+        dDecdZ = sign*(-1*x*(z*dRadZ-z*cosF/len)+len*cosF)/(pow(len, 2)*pow(cosF, 2)*sqrt(1-pow(x, 2)/(pow(len, 2)*pow(cosF, 2))));
+
+        return Matrix({{dRadX, dRadY, dRadZ, 0, 0, 0},
+                       {dDecdX, dDecdY, dDecdZ, 0, 0, 0}});
     }
 
     std::pair<double, double> Var(double Dec, double Ra){
@@ -78,7 +101,7 @@ public:
             Gi = starStateInterpolator->interpolation(splitedValuesOfOriginals[0], 2);
             rAll.push_back(std::pair<double, std::pair<double, double>>(splitedValuesOfOriginals[0],
                                                                         ri(std::pair<double, double>(splitedValuesOfOriginals[1],splitedValuesOfOriginals[2]),
-                                                                           std::pair<double, double>(Gi[1], Gi[2]))));
+                                                                           std::pair<double, double>(Gi[0], Gi[1]))));
 
             varAll.push_back(Var(rAll[rAll.size() - 1].second.second, rAll[rAll.size() - 1].second.first));
             while (!S2Original.eof()) {
@@ -93,14 +116,15 @@ public:
                 Gi = starStateInterpolator->interpolation(splitedValuesOfOriginals[0], 2);
                 rAll.push_back(std::pair<double, std::pair<double, double>>(splitedValuesOfOriginals[0],
                                                                             ri(std::pair<double, double>(splitedValuesOfOriginals[1],splitedValuesOfOriginals[2]),
-                                                                               std::pair<double, double>(Gi[1],
-                                                                                                         Gi[2]))));
+                                                                               std::pair<double, double>(Gi[0],
+                                                                                                         Gi[1]))));
                 varAll.push_back(Var(rAll[rAll.size() - 1].second.second, rAll[rAll.size() - 1].second.first));
             }
             S2Original.close();
             for (int i = 0; i < rAll.size(); i++) {
                 Sra += (pow(rAll[i].second.first, 2)) / (Var(rAll[i].second.second, rAll[i].second.first).first);
                 Sdec += (pow(rAll[i].second.second, 2)) / (Var(rAll[i].second.second, rAll[i].second.first).second);
+                std::cout << Sra << " " << Sdec << '\n';
             }
             if (Sra != 0 || Sdec != 0) {
                 std::cout << std::endl;
@@ -119,8 +143,7 @@ public:
     }
 
     void GaussNewtonAlgorithm(){
-        Matrix dGdX = Matrix({{-0.0001, 0, 0, 0, 0, 0},
-                              {0, -0.0001, 0, 0, 0, 0}});
+        Matrix dGdX = dGdXMatr(Beta.data[0][0], Beta.data[1][0], Beta.data[2][0]);
 
         Matrix A = Matrix(7, 66);
         Matrix W = Matrix(66, 66);
@@ -150,9 +173,9 @@ public:
 
     void updateAndRestart(Matrix &B){
         SolvingSystem solvingSystem = SolvingSystem();
-
-            B.data[0][0] *= 8107.55245;
-            B.data[1][0] *= 8107.55245;
+//
+//            B.data[0][0] *= 8107.55245;
+//            B.data[1][0] *= 8107.55245;
         solvingSystem.start(B);
     }
 

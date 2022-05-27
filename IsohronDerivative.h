@@ -10,25 +10,25 @@ class IsohronDerivative{
 public:
     Matrix dXdPRes = Matrix(6, 7);
     double dvxdm(double x, double y, double z, double m) {
-        return (-x)/(pow(sqrt(x*x+y*y+z*z), 3));
+        return (-x*m*m)/(pow(sqrt(x*x+y*y+z*z), 3));
     }
 
     double dvydm(double x, double y, double z, double m) {
-        return (-y)/(pow(sqrt(x*x+y*y+z*z), 3));;
+        return (-y*m*m)/(pow(sqrt(x*x+y*y+z*z), 3));;
     }
 
     double dvzdm(double x, double y, double z, double m) {
-        return (-z)/(pow(sqrt(x*x+y*y+z*z), 3));;
+        return (-z*m*m)/(pow(sqrt(x*x+y*y+z*z), 3));;
     }
 
-    void updateMatrix(double x, double y, double z, double m, Matrix dXdP){
+    void updateMatrix(double x, double y, double z, double m, Matrix dXdP, double G){
 
         Matrix dFdGm = Matrix({{0, 0, 0, 0, 0, 0, 0},
                                {0, 0, 0, 0, 0, 0, 0},
                                {0, 0, 0, 0, 0, 0, 0},
-                               {0, 0, 0, 0, 0, 0, dvxdm(x, y, z, m)},
-                               {0, 0, 0, 0, 0, 0, dvydm(x, y, z, m)},
-                               {0, 0, 0, 0, 0, 0, dvzdm(x, y, z, m)}});
+                               {0, 0, 0, 0, 0, 0, dvxdm(x, y, z, G)},
+                               {0, 0, 0, 0, 0, 0, dvydm(x, y, z, G)},
+                               {0, 0, 0, 0, 0, 0, dvzdm(x, y, z, G)}});
 
 
 

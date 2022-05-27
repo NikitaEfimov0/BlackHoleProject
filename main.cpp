@@ -46,7 +46,7 @@ void derivative(std::vector<double>X, std::vector<double>&Xdot, IsohronDerivativ
     Xdot[16] =- X[13]*((mBlackHole)/(pow(norm(X[12], X[13], X[14], 0, 0, 0), 3)));
     Xdot[17] =- X[14]*((mBlackHole)/(pow(norm(X[12], X[13], X[14], 0, 0, 0), 3)));
 
-    isohronDerivative->updateMatrix(X[0], X[1], X[2], mBlackHole, dXdP);
+    isohronDerivative->updateMatrix(X[0], X[1], X[2], mBlackHole, dXdP, G);
     dXdPNew = Matrix(isohronDerivative->dXdPRes);
 }
 
@@ -222,8 +222,7 @@ int main(){
         isohronDerivative.save(i);
         i += 2;
         if(i == 3000){
-            window.clear();
-            window.close();
+         break;
         }
     }
    //isohronDerivative.printMatrixdXdP();

@@ -291,7 +291,7 @@ public:
                 toFileS2 << " ";
                 toFileS2 << objects->Y()/8107.55245;
                 toFileS2 << " ";
-                toFileS2 << objects->Z();
+                toFileS2 << objects->Z()/8107.55245;
                 toFileS2<< " ";
                 toFileS2 << objects->dX();
                 toFileS2<< " ";
@@ -337,6 +337,22 @@ public:
 
         }
     }
+
+
+//    double DEC(double x, double y, double z){
+//        return asin((z)/ norm(x, y, z, 0, 0, 0));
+//    }
+//
+//    double RA(double x, double y, double z, double DEC){
+//        double RA;
+//        double r = norm(x, y, z, 0, 0, 0);
+//        if (y/r > 0){
+//            RA = acos( x / r) / cos(DEC);
+//        } else {
+//            RA = 2*M_PI - acos( (x / r) / cos(DEC) );
+//        }
+//        return RA;
+//    }
     void addS2Data(StarObject* objects, int h, int n){
         switch (n) {
             case 2:
@@ -344,9 +360,9 @@ public:
                 toFileS2 << " ";
                 toFileS2 << objects->X()/8107.55245;
                 toFileS2 << " ";
-                toFileS2 << objects->Y() / 8107.55245;
+                toFileS2 << objects->Y()/8107.55245;
                 toFileS2 << " ";
-                toFileS2 << objects->Z();
+                toFileS2 << objects->Z()/8107.55245;
                 toFileS2<< " ";
                 toFileS2 << objects->dX();
                 toFileS2<< " ";
@@ -380,11 +396,11 @@ public:
                 toFileS55 << " ";
                 toFileS55 << objects->Z() / 8107.55245;
                 toFileS55 << " ";
-                toFileS38 << objects->dX();
-                toFileS38<< " ";
-                toFileS38 << objects->dY();
-                toFileS38<< " ";
-                toFileS38 << objects->dZ();
+                toFileS55 << objects->dX();
+                toFileS55<< " ";
+                toFileS55 << objects->dY();
+                toFileS55<< " ";
+                toFileS55 << objects->dZ();
                 toFileS55 << "\n";
                 break;
             default:
