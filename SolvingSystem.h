@@ -188,7 +188,7 @@ public:
 
     void initiation(std::vector<StarObject*>&s, Matrix &B, Matrix& dXdP){
         double Omega2 = (240.50*PI)/180, Omega55 = (129.9*PI)/180, Omega38 = (101.8*PI)/180;
-        double i2, i38 = (166.22*PI)/180, i55 = (141.7*PI)/180;
+        double i2 = (136.78*PI)/180, i38 = (166.22*PI)/180, i55 = (141.7*PI)/180;
         mBlackHole*=B.data[6][0];
         dXdP = Matrix({
                               {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,   0.0f},
@@ -200,6 +200,7 @@ public:
 
 
         s.push_back(new StarObject(  B.data[0][0], B.data[1][0], B.data[2][0], B.data[3][0], B.data[4][0], B.data[5][0], 0));
+        //s.push_back(new StarObject(120.451454,  -22.675722,       -104.524315,      -0.556251   ,      -3.6, 0.0, 0));
         StarObject* s2 = s[s.size()-1];
         i2 = acos((s2->X()*s2->X()+s2->Y()*s2->Y())/((norm(s2->X(), s2->Y(), s2->Z(), 0, 0, 0)*sqrt(s2->X()*s2->X()+s2->Y()*s2->Y()))));
 

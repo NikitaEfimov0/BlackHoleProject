@@ -14,15 +14,16 @@ class GaussNewton{
     std::ifstream S38Original;
     std::ifstream S55Original;
     double BlackHoleMass;
+
+    double prevSRA = 0;
+    double prevSDEC = 0;
     std::vector<std::pair<double, std::pair<double, double>>>rAll;
     std::vector<std::pair<double, double>>varAll;
     IsohronDerivative isohronDerivative1;
     Matrix Beta = Matrix(1, 7);
-    int flag = 0;
     //StarStateInterpolator starStateInterpolator;
 public:
     GaussNewton(double m){
-
 
         BlackHoleMass = m;
         Beta = Matrix({{120.451454},
@@ -122,18 +123,22 @@ public:
                                                                                                          Gi[1]))));
                 varAll.push_back(Var(rAll[rAll.size() - 1].second.second, rAll[rAll.size() - 1].second.first));
             }
-            S2Original.close();
+
+            //S2Original.close();
             for (int i = 0; i < rAll.size(); i++) {
                 Sra += (pow(rAll[i].second.first, 2)) / (Var(rAll[i].second.second, rAll[i].second.first).first);
                 Sdec += (pow(rAll[i].second.second, 2)) / (Var(rAll[i].second.second, rAll[i].second.first).second);
                 //std::cout << Sra << " " << Sdec << '\n';
             }
-            if (Sra != 0 || Sdec != 0) {
+
+            if ((Sra-prevSRA)>0.0001 || (Sdec-prevSDEC)>0.0001) {
                 std::cout << std::endl;
                 std::cout << Sra << " " << Sdec << '\n';
                 GaussNewtonAlgorithm();
+                prevSRA = Sra;
+                prevSDEC = Sdec;
             } else {
-                std::cout << BlackHoleMass;
+                std::cout << Beta.data[6][0];
                 break;
             }
             S2Original.close();
@@ -146,11 +151,14 @@ public:
 
     void GaussNewtonAlgorithm(){
         Matrix dGdX = dGdXMatr(Beta.data[0][0], Beta.data[1][0], Beta.data[2][0]);
-
+//        std::cout<<"DGDGIQNECJOOJNCQOCQ:\n\n";
+//        dGdX.DebugPrint();
+//        std::cout<<"\n\n\n";
         Matrix A = Matrix(7, 66);
         Matrix W = Matrix(66, 66);
         initiateW(W, varAll);
         initiateA(A, dGdX);
+        //A.DebugPrint();
         Matrix At = Matrix(transpose(A));
        // At.DebugPrint();
         std::cout<<"\n\n\n";
@@ -258,13 +266,13 @@ public:
 
     void initiateA(Matrix& A, Matrix& dGdX){
         int iter = 0;
-        for(int i = 0; i < 66; i++){
+        for(int i = 0; i < 66; i+=2){
             Matrix tmp = dGdX*isohronDerivative1.interpolate(rAll[iter].first);
+            //tmp.DebugPrint();
             for(int j = 0; j < 7; j++){
                 A.data[i][j] = tmp.data[0][j];
                 A.data[i+1][j] = tmp.data[1][j];
             }
-            i+=2;
             iter++;
         }
 
@@ -295,8 +303,6 @@ public:
 
 
     void initiateW(Matrix &W, std::vector<std::pair<double, double>>vAll){
-        static int count = 0;
-        static int shift = 0;
         for(int i = 0; i < vAll.size(); i++){
             std::cout<<"RA: "<<vAll[i].first<<" Dec: "<<vAll[i].second<<"\n";
         }
@@ -306,8 +312,8 @@ public:
                 W.data[i][j] = 0.0f;
                 W.data[i+1][j] = 0.0f;
             }
-            W.data[i][i] = double(1.0/(vAll[i/2].first));
-            W.data[i+1][i+1] = double(1.0/(vAll[i/2].second));
+            W.data[i][i] = 1.0/(vAll[i/2].first);
+            W.data[i+1][i+1] = 1.0/(vAll[i/2].second);
         }
 
     }

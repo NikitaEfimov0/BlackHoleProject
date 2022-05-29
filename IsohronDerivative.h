@@ -114,7 +114,9 @@ public:
 
                 Matrix X = Xt0*(double)((double)(allDeriv[i+1].first-t)/(allDeriv[i+1].first-allDeriv[i].first))+
                            Xt1*((double)(t-allDeriv[i].first)/(allDeriv[i+1].first-allDeriv[i].first));
-               // X.DebugPrint();
+//                std::cout<<"X!!!(#(@)(@(!@((!(@!(@(!(@!: \n";
+//                X.DebugPrint();
+//                std::cout<<"\n\n\n";
                 return X;
             }
         }

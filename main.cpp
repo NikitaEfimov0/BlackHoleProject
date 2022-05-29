@@ -205,25 +205,23 @@ int main(){
     window.setView(view);
     int i = 0;
 
-    while (window.isOpen()) {
+    while (i!=3000) {
         interp->addS2Data(system[0], i, 2);
         interp->addS2Data(system[1], i, 38);
         interp->addS2Data(system[2], i, 55);
-        sf::Event event;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))window.close();
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)window.close();
-        }
-        window.clear();
-        draw->setObjects(window, system);
-        window.display();
+//        sf::Event event;
+//        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))window.close();
+//        while (window.pollEvent(event)) {
+//            if (event.type == sf::Event::Closed)window.close();
+//        }
+//        window.clear();
+//        draw->setObjects(window, system);
+//        window.display();
         RK4(system, &isohronDerivative, dXdP);
         //sleep(2);
         isohronDerivative.save(i);
         i += 2;
-        if(i == 3000){
-         break;
-        }
+
     }
    //isohronDerivative.printMatrixdXdP();
     std::cout<<"\n\n\n";

@@ -201,7 +201,7 @@ Matrix Matrix::operator* ( double right ) {
 
     for ( u32 i = 0; i < n; i++ )
         for ( u32 j = 0; j < m; j++ )
-			C[ i ][ j ] = data[ i ][ j ] * right;
+			C.data[ i ][ j ] = data[ i ][ j ] * right;
 
     return C;
 }
