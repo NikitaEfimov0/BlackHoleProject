@@ -212,7 +212,7 @@ public:
             Omega2 = 2*PI - acos(n.data[0][0]/ norm(n.data[0][0], n.data[0][1], n.data[0][2], 0, 0, 0));
         }
 
-        projection(s[s.size()-1], Omega2, i2);
+        //projection(s[s.size()-1], Omega2, i2);
 
         s.push_back(new StarObject(-22.146914,    207.074722,      15.702321,       -3.191719    ,   0.341359 , 0., 0));
 

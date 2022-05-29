@@ -46,9 +46,11 @@ public:
         dRadX = sign*x*z/(sqrt(1-z*z/(len*len))*len*len*len);
         dRadY = sign*x*z/(sqrt(1-z*z/(len*len))*len*len*len);
         dRadZ = (pow(z, 3)-pow(z, 2))/((sqrt(1-pow(z, 2)/pow(len, 2))*pow(len, 3)));
+
         if(y/len>0){
             sign = 1;
         }
+
         dDecdX = sign*(-1*x*(z*dRadX-x*cosF/len)+len*cosF)/(pow(len, 2)*pow(cosF, 2)*sqrt(1-pow(x, 2)/(pow(len, 2)*pow(cosF, 2))));
         dDecdY = sign*(-1*x*(z*dRadY-y*cosF/len)+len*cosF)/(pow(len, 2)*pow(cosF, 2)*sqrt(1-pow(x, 2)/(pow(len, 2)*pow(cosF, 2))));
         dDecdZ = sign*(-1*x*(z*dRadZ-z*cosF/len)+len*cosF)/(pow(len, 2)*pow(cosF, 2)*sqrt(1-pow(x, 2)/(pow(len, 2)*pow(cosF, 2))));
@@ -79,7 +81,7 @@ public:
         return std::pair<double, double>(ra, dec);
     }
 
-    bool findBlackHoleMass(StarStateInterpolator *starStateInterpolator, IsohronDerivative isohronDerivative){
+    void findBlackHoleMass(StarStateInterpolator *starStateInterpolator, IsohronDerivative isohronDerivative){
         while(true) {
             S2Original.open("../Data/S2Original.dat");
             S38Original.open("../Data/S38Original.dat");
@@ -124,7 +126,7 @@ public:
             for (int i = 0; i < rAll.size(); i++) {
                 Sra += (pow(rAll[i].second.first, 2)) / (Var(rAll[i].second.second, rAll[i].second.first).first);
                 Sdec += (pow(rAll[i].second.second, 2)) / (Var(rAll[i].second.second, rAll[i].second.first).second);
-                std::cout << Sra << " " << Sdec << '\n';
+                //std::cout << Sra << " " << Sdec << '\n';
             }
             if (Sra != 0 || Sdec != 0) {
                 std::cout << std::endl;
@@ -150,12 +152,12 @@ public:
         initiateW(W, varAll);
         initiateA(A, dGdX);
         Matrix At = Matrix(transpose(A));
-        At.DebugPrint();
+       // At.DebugPrint();
         std::cout<<"\n\n\n";
-        W.DebugPrint();
+        //W.DebugPrint();
         std::cout<<"\n\n\n";
         Matrix tmp = At*W;
-        tmp.DebugPrint();
+        //tmp.DebugPrint();
         std::cout<<"\n\n\n";
 
         Matrix AtWA = inversion(At*W*A);
@@ -164,15 +166,25 @@ public:
         multTMP.DebugPrint();
         //At.DebugPrint();
         Matrix newBeta = Matrix(Beta - (AtWA*AWB));
-        std::cout<<"\n\n\n";
+        std::cout<<"\n\n";
         newBeta.DebugPrint();
+        if(newBeta.data[6][0]<3e06 || newBeta.data[6][0]>4.8e06){
+            newBeta.data[6][0] = Beta.data[6][0];
+        }
+
         Beta = Matrix(newBeta);
+        std::cout<<"New Beta:\n";
+        Beta.DebugPrint();
+        std::cout<<"\n\n\n";
         updateAndRestart(Beta);
 
     }
 
     void updateAndRestart(Matrix &B){
         SolvingSystem solvingSystem = SolvingSystem();
+//        if(B.data[6][0]<0){
+//            B.data[6][0]*=-1;
+//        }
 //
 //            B.data[0][0] *= 8107.55245;
 //            B.data[1][0] *= 8107.55245;

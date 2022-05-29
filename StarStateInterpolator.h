@@ -340,7 +340,7 @@ public:
 
 
 //    double DEC(double x, double y, double z){
-//        return asin((z)/ norm(x, y, z, 0, 0, 0));
+//        return atan(y/x);
 //    }
 //
 //    double RA(double x, double y, double z, double DEC){
@@ -354,6 +354,7 @@ public:
 //        return RA;
 //    }
     void addS2Data(StarObject* objects, int h, int n){
+
         switch (n) {
             case 2:
                 toFileS2 << h;
