@@ -102,8 +102,8 @@ public:
 
             Gi = starStateInterpolator->interpolation(splitedValuesOfOriginals[0], 2);
             rAll.push_back(std::pair<double, std::pair<double, double>>(splitedValuesOfOriginals[0],
-                                                                        ri(std::pair<double, double>(splitedValuesOfOriginals[1],splitedValuesOfOriginals[2]),
-                                                                           std::pair<double, double>(Gi[0], Gi[1]))));
+                    ri(std::pair<double, double>(splitedValuesOfOriginals[1],splitedValuesOfOriginals[2]),
+                            std::pair<double, double>(Gi[0], Gi[1]))));
 
             varAll.push_back(Var(rAll[rAll.size() - 1].second.second, rAll[rAll.size() - 1].second.first));
             while (!S2Original.eof()) {
@@ -168,9 +168,9 @@ public:
         Matrix newBeta = Matrix(Beta - (AtWA*AWB));
         std::cout<<"\n\n";
         newBeta.DebugPrint();
-        if(newBeta.data[6][0]<3e06 || newBeta.data[6][0]>4.8e06){
-            newBeta.data[6][0] = Beta.data[6][0];
-        }
+//        if(newBeta.data[6][0]<3e06 || newBeta.data[6][0]>4.8e06){
+//            newBeta.data[6][0] = Beta.data[6][0];
+//        }
 
         Beta = Matrix(newBeta);
         std::cout<<"New Beta:\n";
