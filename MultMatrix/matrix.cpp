@@ -143,68 +143,67 @@ Matrix Matrix::operator= ( const std::vector<std::vector<double>>& right ) {
 
 Matrix Matrix::operator+ ( const Matrix& right ) {
 	if ( m != right.m || n != right.n ) {
-		error |= ME_Dimensions;
-		puts( "Error: dimensions mismatch in sum (A + B)." );
-	} else {
-		Matrix C( m, n );
-
-        for ( u32 i = 0; i < n; i++ )
-            for ( u32 j = 0; j < m; j++ )
-				C.data[ i ][ j ] = data[ i ][ j ] + right.data[ i ][ j ];
-
-		return C;
+        error |= ME_Dimensions;
+		puts( "Error: dimensions mismatch in sub (A - B)." );
+		return Matrix( *this );
 	}
 
-    return Matrix(*this);
+	Matrix C( m, n );
+
+    for ( u32 i = 0; i < n; i++ )
+        for ( u32 j = 0; j < m; j++ )
+			C.data[ i ][ j ] = data[ i ][ j ] + right.data[ i ][ j ];
+
+	return C;
 }
 
 Matrix Matrix::operator- ( const Matrix& right ) {
-    Matrix C( m, n );
 	if ( m != right.m || n != right.n ) {
-        C.error |= ME_Dimensions;
+        error |= ME_Dimensions;
 		puts( "Error: dimensions mismatch in sub (A - B)." );
-	} else {
-
-        for ( u32 i = 0; i < n; i++ )
-            for ( u32 j = 0; j < m; j++ )
-                C.data[ i ][ j ] = data[ i ][ j ] - right.data[ i ][ j ];
-
-		return C;
+		return Matrix( *this );
 	}
 
-    return Matrix(*this);
+    Matrix C( m, n );
+
+    for ( u32 i = 0; i < n; i++ )
+        for ( u32 j = 0; j < m; j++ )
+            C.data[ i ][ j ] = data[ i ][ j ] - right.data[ i ][ j ];
+
+    return C;
 }
 
 Matrix Matrix::operator* ( const Matrix& right ) {
+	if ( m != right.n ) {
+        error |= ME_Dimensions;
+		printf( "Error: dimensions mismatch (%lux%lu * %lux%lu).\n", n, m, right.n, right.m );
+		return Matrix( *this );
+	}
+
     Matrix C( right.m, n );
 
-	if ( m != right.n ) {
-        C.error |= ME_Dimensions;
-		printf( "Error: dimensions mismatch (%lux%lu * %lux%lu).\n", n, m, right.n, right.m );
-	} else {
+    for ( u32 i = 0; i < n; i++ ) {
+        for ( u32 j = 0; j < right.m; j++ ) {
+			double sum = 0.0;
 
-        for ( u32 i = 0; i < n; i++ ) {
-            for ( u32 j = 0; j < right.m; j++ ) {
-				double sum = 0.0;
+            for ( u32 k = 0; k < right.n; k++ )
+				sum += data[ i ][ k ] * right.data[ k ][ j ];
 
-                for ( u32 k = 0; k < right.n; k++ )
-					sum += data[ i ][ k ] * right.data[ k ][ j ];
-
-				C.data[ i ][ j ] = sum;
-			}
+			C.data[ i ][ j ] = sum;
 		}
-
 	}
 
     return C;
 }
 
 Matrix Matrix::operator* ( double right ) {
+    Matrix C( m, n );
+
     for ( u32 i = 0; i < n; i++ )
         for ( u32 j = 0; j < m; j++ )
-			data[ i ][ j ] *= right;
+			C[ i ][ j ] = data[ i ][ j ] * right;
 
-    return Matrix(*this);
+    return C;
 }
 
 
@@ -231,6 +230,7 @@ void Matrix::DebugPrint( void ) {
 
         for ( u32 j = 0; j < m; j++ )
             std::cout<<data[i][j]<<" ";
+
 		puts( "" ); // A newline.
 	}
 }
