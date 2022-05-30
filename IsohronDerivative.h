@@ -112,8 +112,10 @@ public:
                 Matrix Xt1(allDeriv[i+1].second);
                 //Xt1.DebugPrint();
 
-                Matrix X = Xt0*(double)((double)(allDeriv[i+1].first-t)/(allDeriv[i+1].first-allDeriv[i].first))+
-                           Xt1*((double)(t-allDeriv[i].first)/(allDeriv[i+1].first-allDeriv[i].first));
+//                Matrix X = Xt0*(double)((double)(allDeriv[i+1].first-t)/(allDeriv[i+1].first-allDeriv[i].first))+
+//                           Xt1*((double)(t-allDeriv[i].first)/(allDeriv[i+1].first-allDeriv[i].first));
+
+                Matrix X = Xt0 + (Xt1-Xt0)*((t-allDeriv[i].first)/(allDeriv[i+1].first-allDeriv[i].first));
 //                std::cout<<"X!!!(#(@)(@(!@((!(@!(@(!(@!: \n";
 //                X.DebugPrint();
 //                std::cout<<"\n\n\n";

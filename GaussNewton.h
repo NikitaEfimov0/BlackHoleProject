@@ -8,6 +8,7 @@
 #include <fstream>
 #include "StarStateInterpolator.h"
 #include "SolvingSystem.h"
+#include <utility>
 #include <vector>
 class GaussNewton{
     std::ifstream S2Original;
@@ -21,6 +22,7 @@ class GaussNewton{
     std::vector<std::pair<double, double>>varAll;
     IsohronDerivative isohronDerivative1;
     Matrix Beta = Matrix(1, 7);
+
     //StarStateInterpolator starStateInterpolator;
 public:
     GaussNewton(double m){
@@ -47,7 +49,7 @@ public:
         dRadX = sign*x*z/(sqrt(1-z*z/(len*len))*len*len*len);
         dRadY = sign*x*z/(sqrt(1-z*z/(len*len))*len*len*len);
         dRadZ = (pow(z, 3)-pow(z, 2))/((sqrt(1-pow(z, 2)/pow(len, 2))*pow(len, 3)));
-
+//
         if(y/len>0){
             sign = 1;
         }
@@ -62,7 +64,7 @@ public:
 
     std::pair<double, double> Var(double Dec, double Ra){
 
-        double ra = Ra - (int)Ra;
+        double ra = abs(Ra - (int)Ra);
         ra = 0.001 * ((int)std::trunc(ra * 1000) % 10);
         if (ra == 0){
             ra = 0.0001;
@@ -70,7 +72,7 @@ public:
             ra /= 2;
         }
 
-        double dec = Dec - (int)Dec;
+        double dec = abs(Dec - (int)Dec);
         dec = 0.001 * ((int)std::trunc(dec * 1000) % 10);
 
         if (dec == 0){
@@ -102,9 +104,9 @@ public:
             while (split >> number)splitedValuesOfOriginals.push_back(number);
 
             Gi = starStateInterpolator->interpolation(splitedValuesOfOriginals[0], 2);
-            rAll.push_back(std::pair<double, std::pair<double, double>>(splitedValuesOfOriginals[0],
+            rAll.emplace_back(splitedValuesOfOriginals[0],
                     ri(std::pair<double, double>(splitedValuesOfOriginals[1],splitedValuesOfOriginals[2]),
-                            std::pair<double, double>(Gi[0], Gi[1]))));
+                            std::pair<double, double>(Gi[0], Gi[1])));
 
             varAll.push_back(Var(rAll[rAll.size() - 1].second.second, rAll[rAll.size() - 1].second.first));
             while (!S2Original.eof()) {
@@ -117,10 +119,10 @@ public:
                 while (splitInWhile >> numberInWhile)splitedValuesOfOriginals.push_back(numberInWhile);
 
                 Gi = starStateInterpolator->interpolation(splitedValuesOfOriginals[0], 2);
-                rAll.push_back(std::pair<double, std::pair<double, double>>(splitedValuesOfOriginals[0],
+                rAll.emplace_back(splitedValuesOfOriginals[0],
                                                                             ri(std::pair<double, double>(splitedValuesOfOriginals[1],splitedValuesOfOriginals[2]),
                                                                                std::pair<double, double>(Gi[0],
-                                                                                                         Gi[1]))));
+                                                                                                         Gi[1])));
                 varAll.push_back(Var(rAll[rAll.size() - 1].second.second, rAll[rAll.size() - 1].second.first));
             }
 
@@ -131,7 +133,7 @@ public:
                 //std::cout << Sra << " " << Sdec << '\n';
             }
 
-            if ((Sra-prevSRA)>0.0001 || (Sdec-prevSDEC)>0.0001) {
+            if ((Sra != 0) || (Sdec != 0)) {
                 std::cout << std::endl;
                 std::cout << Sra << " " << Sdec << '\n';
                 GaussNewtonAlgorithm();
@@ -158,22 +160,27 @@ public:
         Matrix W = Matrix(66, 66);
         initiateW(W, varAll);
         initiateA(A, dGdX);
-        //A.DebugPrint();
+        A.DebugPrint();
         Matrix At = Matrix(transpose(A));
        // At.DebugPrint();
         std::cout<<"\n\n\n";
-        //W.DebugPrint();
+        W.DebugPrint();
         std::cout<<"\n\n\n";
         Matrix tmp = At*W;
-        //tmp.DebugPrint();
+        tmp.DebugPrint();
         std::cout<<"\n\n\n";
 
         Matrix AtWA = inversion(At*W*A);
-        Matrix AWB = AtWrBeta(A, W);
-        Matrix multTMP = AtWA*AWB;
+        Matrix AWrB = AtWrBeta(A, W);
+        std::cout<<"\n\n\n";
+        AtWA.DebugPrint();
+        std::cout<<"\n\n\n";
+        AWrB.DebugPrint();
+        std::cout<<"\n\n\nmultTMP\n";
+        Matrix multTMP = AtWA * AWrB;
         multTMP.DebugPrint();
         //At.DebugPrint();
-        Matrix newBeta = Matrix(Beta - (AtWA*AWB));
+        Matrix newBeta = Matrix(Beta - (multTMP));
         std::cout<<"\n\n";
         newBeta.DebugPrint();
 //        if(newBeta.data[6][0]<3e06 || newBeta.data[6][0]>4.8e06){
@@ -181,9 +188,9 @@ public:
 //        }
 
         Beta = Matrix(newBeta);
-        std::cout<<"New Beta:\n";
-        Beta.DebugPrint();
-        std::cout<<"\n\n\n";
+//        std::cout<<"New Beta:\n";
+//        Beta.DebugPrint();
+//        std::cout<<"\n\n\n";
         updateAndRestart(Beta);
 
     }
@@ -273,6 +280,7 @@ public:
                 A.data[i][j] = tmp.data[0][j];
                 A.data[i+1][j] = tmp.data[1][j];
             }
+
             iter++;
         }
 
@@ -292,13 +300,12 @@ public:
 
      Matrix AtWrBeta(Matrix A, Matrix W){
         Matrix rBeta = Matrix(1, rAll.size()*2);
-        for(int i = 0, j = 0; i < rBeta.GetCols(); i++){
+        for(int i = 0, j = 0; i < rBeta.GetCols(); i+=2){
             rBeta.data[i][0] = rAll[j].second.first;
             rBeta.data[i+1][0] = rAll[j].second.second;
-            i+=2;
             j+=1;
         }
-        return transpose(A)*W*rBeta;
+        return transpose(std::move(A))*W*rBeta;
     }
 
 
@@ -307,7 +314,6 @@ public:
             std::cout<<"RA: "<<vAll[i].first<<" Dec: "<<vAll[i].second<<"\n";
         }
         for(int i = 0; i < 66; i+=2){
-
             for(int j = 0; j < 66; j++){
                 W.data[i][j] = 0.0f;
                 W.data[i+1][j] = 0.0f;
