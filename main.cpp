@@ -17,6 +17,29 @@ const double PI = 4*atan(1.);
 double PointOfMid = 0;
 
 
+double E(double e){
+    double M = 0;
+    double Z = (e*sin(M))/(sqrt(e*e+1-2*e*cos(M)));
+
+    return M+Z-((pow(Z, 4)/6)*(1/tan(M)));
+}
+
+
+std::vector<double>convertToDecart(double a, double e,  double i, double w, double Ohm){
+    double x = a*((cos(E(e))-e)*(cos(w)*cos(Ohm)-sin(w)*sin(Ohm)*cos(i))+((sqrt(1-pow(e, 2)))*sin(E(e)))*(-sin(w)*cos(Ohm)-cos(w)*sin(Ohm)*cos(i)));
+
+    double y = a*((cos(E(e))-e)*(cos(w)*sin(Ohm)+sin(w)*cos(Ohm)*cos(i))+((sqrt(1-pow(e, 2)))*sin(E(e)))*(-sin(w)*sin(Ohm)+cos(w)*sin(Ohm)*cos(i)));
+
+    double z = a*((cos(E(e))-e)*(sin(w)*sin(i))+(sqrt(1-pow(e, 2)))*sin(E(e))*(cos(w)*sin(i)));
+
+    std::vector<double> res;
+    res.push_back(x);
+    res.push_back(y);
+    res.push_back(z);
+
+    return res;
+}
+
 double norm(double x1, double y1, double z1, double  x2, double y2, double z2){
     return sqrt(pow((x1-x2), 2)+pow((y1-y2), 2)+pow((z1-z2), 2));
 }
@@ -171,7 +194,12 @@ void initiation(std::vector<StarObject*>&s, Matrix& dXdP){
         {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,   0.0f}});
 
 
+    std::vector<double> s2 = convertToDecart(0.126, 0.884, 136.78, 71.36, 234.50);
+
     s.push_back(new StarObject(  120.451454,  -22.675722,       -104.524315,      -0.556251   ,      -3.6, 0.0, (14*2*pow(10, 30))));
+
+
+   // s.push_back(new StarObject(  s2[0], s2[1], s2[2],      -0.556251   ,      -3.6, 0.0, (14*2*pow(10, 30))));
 
     projection(s[s.size()-1], Omega2, i2);
 
@@ -205,7 +233,7 @@ int main(){
     window.setView(view);
     int i = 0;
 
-    while (i!=3000) {
+    while (/*window.isOpen()*/ i!=3000) {
         interp->addS2Data(system[0], i, 2);
         interp->addS2Data(system[1], i, 38);
         interp->addS2Data(system[2], i, 55);

@@ -136,6 +136,7 @@ public:
             if ((Sra != 0) || (Sdec != 0)) {
                 std::cout << std::endl;
                 std::cout << Sra << " " << Sdec << '\n';
+                std::cout<<Beta.data[6][0]<<"\n";
                 GaussNewtonAlgorithm();
 
             } else {
@@ -181,7 +182,7 @@ public:
         //At.DebugPrint();
         Matrix newBeta = Matrix(Beta - (multTMP));
         std::cout<<"\n\n";
-        newBeta.DebugPrint();
+        //newBeta.DebugPrint();
 //        if(newBeta.data[6][0]<3e06 || newBeta.data[6][0]>4.8e06){
 //            newBeta.data[6][0] = Beta.data[6][0];
 //        }
@@ -309,9 +310,9 @@ public:
 
 
     void initiateW(Matrix &W, std::vector<std::pair<double, double>>vAll){
-        for(int i = 0; i < vAll.size(); i++){
-            std::cout<<"RA: "<<vAll[i].first<<" Dec: "<<vAll[i].second<<"\n";
-        }
+//        for(int i = 0; i < vAll.size(); i++){
+//            std::cout<<"RA: "<<vAll[i].first<<" Dec: "<<vAll[i].second<<"\n";
+//        }
         for(int i = 0; i < 66; i+=2){
             for(int j = 0; j < 66; j++){
                 W.data[i][j] = 0.0f;
