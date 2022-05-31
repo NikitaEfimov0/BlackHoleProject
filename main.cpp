@@ -16,7 +16,7 @@ double mBlackHole = G*G*4000000;
 const double PI = 4*atan(1.);
 double PointOfMid = 0;
 
-
+double X, Y, Z;
 double E(double e){
     double M = 0;
     double Z = (e*sin(M))/(sqrt(e*e+1-2*e*cos(M)));
@@ -38,6 +38,17 @@ std::vector<double>convertToDecart(double a, double e,  double i, double w, doub
     res.push_back(z);
 
     return res;
+}
+
+
+std::vector<double> iauS2c(double theta, double phi)
+
+{
+    double cp;
+
+    cp = cos(phi);
+    return std::vector<double>({cos(theta) * cp, sin(theta) * cp, sin(phi)});
+
 }
 
 double norm(double x1, double y1, double z1, double  x2, double y2, double z2){
@@ -196,12 +207,21 @@ void initiation(std::vector<StarObject*>&s, Matrix& dXdP){
 
     std::vector<double> s2 = convertToDecart(0.126, 0.884, 136.78, 71.36, 234.50);
 
-    s.push_back(new StarObject(  120.451454,  -22.675722,       -104.524315,      -0.556251   ,      -3.6, 0.0, (14*2*pow(10, 30))));
+    std::vector<double> s2Sph = iauS2c(0.0386, 0.0213);
+
+   //s.push_back(new StarObject(  120.451454,  -22.675722,       -104.524315,      -0.556251   ,      -3.6, 0.0, (14*2*pow(10, 30))));
+
+    s.push_back(new StarObject(s2Sph[0], s2Sph[1], s2Sph[2],      -0.556251   ,      -3.6, 0.0, (14*2*pow(10, 30))));
 
 
-   // s.push_back(new StarObject(  s2[0], s2[1], s2[2],      -0.556251   ,      -3.6, 0.0, (14*2*pow(10, 30))));
+    // s.push_back(new StarObject(  s2[0], s2[1], s2[2],      -0.556251   ,      -3.6, 0.0, (14*2*pow(10, 30))));
 
-    projection(s[s.size()-1], Omega2, i2);
+    //projection(s[s.size()-1], Omega2, i2);
+
+    X = s[s.size()-1]->X();
+    Y = s[s.size()-1]->Y();
+    Z = s[s.size()-1]->Z();
+
 
     s.push_back(new StarObject(-22.146914,    207.074722,      15.702321,       -3.191719    ,   0.341359 , 0., 0));
 
@@ -254,7 +274,7 @@ int main(){
    //isohronDerivative.printMatrixdXdP();
     std::cout<<"\n\n\n";
     interp->cleanLast();
-    GaussNewton gaussNewton = GaussNewton(mBlackHole/(G*G));
+    GaussNewton gaussNewton = GaussNewton(mBlackHole/(G*G), X, Y, Z);
     //interp->interpolation(2004.580, 55);
 
    gaussNewton.findBlackHoleMass(interp, isohronDerivative);

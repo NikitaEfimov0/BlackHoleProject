@@ -25,12 +25,12 @@ class GaussNewton{
 
     //StarStateInterpolator starStateInterpolator;
 public:
-    GaussNewton(double m){
+    GaussNewton(double m, double x, double y, double z){
 
         BlackHoleMass = m;
-        Beta = Matrix({{120.451454},
-                       {-22.675722},
-                       {-104.524315},
+        Beta = Matrix({{x},
+                       {y},
+                       {z},
                        {-0.556251},
                        {-3.6},
                        {0.0},
