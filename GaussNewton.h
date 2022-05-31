@@ -108,7 +108,7 @@ public:
                     ri(std::pair<double, double>(splitedValuesOfOriginals[1],splitedValuesOfOriginals[2]),
                             std::pair<double, double>(Gi[0], Gi[1])));
 
-            varAll.push_back(Var(rAll[rAll.size() - 1].second.second, rAll[rAll.size() - 1].second.first));
+            varAll.emplace_back(pow(splitedValuesOfOriginals[3], 2), pow(splitedValuesOfOriginals[4], 2));
             while (!S2Original.eof()) {
                 originalValuesInIMoment.clear();
                 splitedValuesOfOriginals.clear();
@@ -123,13 +123,13 @@ public:
                                                                             ri(std::pair<double, double>(splitedValuesOfOriginals[1],splitedValuesOfOriginals[2]),
                                                                                std::pair<double, double>(Gi[0],
                                                                                                          Gi[1])));
-                varAll.push_back(Var(rAll[rAll.size() - 1].second.second, rAll[rAll.size() - 1].second.first));
+                varAll.emplace_back(pow(splitedValuesOfOriginals[3], 2), pow(splitedValuesOfOriginals[4], 2));
             }
 
             //S2Original.close();
             for (int i = 0; i < rAll.size(); i++) {
-                Sra += (pow(rAll[i].second.first, 2)) / (Var(rAll[i].second.second, rAll[i].second.first).first);
-                Sdec += (pow(rAll[i].second.second, 2)) / (Var(rAll[i].second.second, rAll[i].second.first).second);
+                Sra += (pow(rAll[i].second.first, 2)) / (varAll[i].first);
+                Sdec += (pow(rAll[i].second.second, 2)) / (varAll[i].second);
                 //std::cout << Sra << " " << Sdec << '\n';
             }
 
@@ -137,8 +137,7 @@ public:
                 std::cout << std::endl;
                 std::cout << Sra << " " << Sdec << '\n';
                 GaussNewtonAlgorithm();
-                prevSRA = Sra;
-                prevSDEC = Sdec;
+
             } else {
                 std::cout << Beta.data[6][0];
                 break;

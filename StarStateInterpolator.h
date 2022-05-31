@@ -274,11 +274,12 @@ public:
 
 
     std::pair<double, double> toSpherical(double x, double y, double z){
-        double p = norm(x, y, z, 0, 0, 0);
-        double cosPhi = x/(sqrt(x*x+y*y));
-        double sinPhi = y/(sqrt(x*x+y*y));
-        double Teta = acos(z/p);
-        return std::pair<double, double>();
+
+        double d2 = x*x + y*y;
+
+        double theta = (d2 == 0.0) ? 0.0 : atan2(y, x); //RA
+        double phi = (z == 0.0) ? 0.0 : atan2(z, sqrt(d2));//DEC
+        return std::pair<double, double>(theta, phi);
     }
 
     void addData(StarObject* objects, int h, int n){
@@ -355,13 +356,14 @@ public:
 //    }
     void addS2Data(StarObject* objects, int h, int n){
 
+        std::pair<double, double>RaDec = toSpherical(objects->X(), objects->Y(), objects->Z());
         switch (n) {
             case 2:
                 toFileS2 << h;
                 toFileS2 << " ";
-                toFileS2 << objects->X()/8107.55245;
+                toFileS2 << RaDec.first;
                 toFileS2 << " ";
-                toFileS2 << objects->Y()/8107.55245;
+                toFileS2 << RaDec.second;
                 toFileS2 << " ";
                 toFileS2 << objects->Z()/8107.55245;
                 toFileS2<< " ";
