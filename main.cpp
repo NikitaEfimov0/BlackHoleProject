@@ -238,7 +238,7 @@ void initiation(std::vector<StarObject*>&s, Matrix& dXdP){
 
    //s.push_back(new StarObject(  120.451454,  -22.675722,       -104.524315,      -0.556251   ,      -3.6, 0.0, (14*2*pow(10, 30))));
 
-    s.push_back(new StarObject(s2Sph[0], s2Sph[1], s2Sph[2],      0.0701   , 0.0385 , 0 , (14*2*pow(10, 30))));
+    s.push_back(new StarObject(s2Sph[0], s2Sph[1], s2Sph[2],      s2V[0]   , s2V[1] , s2V[2] , (14*2*pow(10, 30))));
 
 
     // s.push_back(new StarObject(  s2[0], s2[1], s2[2],      -0.556251   ,      -3.6, 0.0, (14*2*pow(10, 30))));

@@ -33,7 +33,7 @@ public:
                        {z},
                        {dx},
                        {dy},
-                       {0},
+                       {dz},
                        {BlackHoleMass}});
     }
 
