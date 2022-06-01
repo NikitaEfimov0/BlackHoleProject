@@ -19,9 +19,9 @@ double PointOfMid = 0;
 double X, Y, Z, dX, dY, dZ;
 double E(double e){
     double M = 0;
-    double Z = (e*sin(M))/(sqrt(e*e+1-2*e*cos(M)));
+    double Z = (e*sin(M))/(sqrt(e*e+1.0-2.0*e*cos(M)));
 
-    return M+Z-((pow(Z, 4)/6)*(1/tan(M)));
+    return M+Z-((pow(Z, 4)/6.0)*(1.0/tan(M)));
 }
 
 
@@ -54,28 +54,30 @@ std::vector<double> iauS2c(double theta, double phi)
 
 
 
-//std::vector<double> S2pv(double theta, double phi, double r, double td, double pd, double rd){
-//    {
-//        double st, ct, sp, cp, rcp, x, y, rpd, w;
-//
-//
-//        st = sin(theta);
-//        ct = cos(theta);
-//        sp = sin(phi);
-//        cp = cos(phi);
-//        rcp = r * cp;
-//        x = rcp * ct;
-//        y = rcp * st;
-//        rpd = r * pd;
-//        w = rpd*sp - cp*rd;
-//
-//        pv[0][0] = x;
-//        pv[0][1] = y;
-//        pv[0][2] = r * sp;
-//        pv[1][0] = -y*td - w*ct;
-//        pv[1][1] =  x*td - w*st;
-//        pv[1][2] = rpd*cp + sp*rd;
-//}
+std::vector<double> S2pv(double theta, double phi, double r, double td, double pd, double rd)
+    {
+        double st, ct, sp, cp, rcp, x, y, rpd, w;
+
+
+        st = sin(theta);
+        ct = cos(theta);
+        sp = sin(phi);
+        cp = cos(phi);
+        rcp = r * cp;
+        x = ct;
+        y = st;
+        rpd = r * pd;
+        w = rpd*sp - cp*rd;
+
+        std::vector<double> res;
+        res.push_back(x);
+        res.push_back(y);
+        res.push_back(sp);
+        res.push_back(-y*td - w*ct);
+        res.push_back(x*td - w*st);
+        res.push_back(rpd*cp + sp*rd);
+        return res;
+}
 
 double norm(double x1, double y1, double z1, double  x2, double y2, double z2){
     return sqrt(pow((x1-x2), 2)+pow((y1-y2), 2)+pow((z1-z2), 2));
@@ -235,15 +237,18 @@ void initiation(std::vector<StarObject*>&s, Matrix& dXdP){
 
     std::vector<double> s2Sph = iauS2c(0.0386, 0.0213);
     std::vector<double> s2V = iauS2c(0.0385, 0.0701);
+    double r = sqrt(pow(s2Sph[0], 2)+pow(s2Sph[1], 2)+pow(s2Sph[2], 2));
+    double r1 = sqrt(pow(s2V[0], 2)+pow(s2V[1], 2)+pow(s2V[2], 2));
+    std::vector<double> finalS2 = S2pv(0.036, 0.0213, sqrt(pow(s2Sph[0], 2)+pow(s2Sph[1], 2)+pow(s2Sph[2], 2)), 0.0385-0.0386, 0.0701-0.0213, r1-r);
 
-   //s.push_back(new StarObject(  120.451454,  -22.675722,       -104.524315,      -0.556251   ,      -3.6, 0.0, (14*2*pow(10, 30))));
+   s.push_back(new StarObject(  120.451454,  -22.675722,       -104.524315,      -0.556251   ,      -3.6, 0.0, (14*2*pow(10, 30))));
 
-    s.push_back(new StarObject(s2Sph[0], s2Sph[1], s2Sph[2],      s2V[0]   , s2V[1] , s2V[2] , (14*2*pow(10, 30))));
+    s.push_back(new StarObject(finalS2[0], finalS2[1], finalS2[2], finalS2[3], finalS2[4], 0. , (14*2*pow(10, 30))));
 
 
     // s.push_back(new StarObject(  s2[0], s2[1], s2[2],      -0.556251   ,      -3.6, 0.0, (14*2*pow(10, 30))));
 
-    //projection(s[s.size()-1], Omega2, i2);
+    projection(s[s.size()-1], Omega2, i2);
 
     X = s[s.size()-1]->X();
     Y = s[s.size()-1]->Y();
