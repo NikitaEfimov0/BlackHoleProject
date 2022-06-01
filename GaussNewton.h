@@ -112,9 +112,9 @@ public:
                 //std::cout << Sra << " " << Sdec << '\n';
             }
 
-            if ((Sra-prevSRA) != prevSRA/100*0.1 || (Sdec-prevSDEC) != prevSDEC/100*0.1 ) {
+            if ((Sra-prevSRA) != prevSRA/100*0.1 && (Sdec-prevSDEC) != prevSDEC/100*0.1 ) {
                 std::cout << std::endl;
-                std::cout << Sra << " " << Sdec << '\n';
+                //std::cout << Sra << " " << Sdec << '\n';
                 std::cout<<Beta.data[6][0]<<"\n";
                 GaussNewtonAlgorithm();
                 prevSRA = Sra; prevSDEC = Sdec;

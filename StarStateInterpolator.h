@@ -364,11 +364,18 @@ public:
         std::pair<double, double>RaDec = toSpherical(objects->X(), objects->Y(), objects->Z());
         switch (n) {
             case 2:
+//                toFileS2 << h;
+//                toFileS2 << " ";
+//                toFileS2 << RaDec.first;
+//                toFileS2 << " ";
+//                toFileS2 << RaDec.second;
+//                toFileS2 << " ";
+//                toFileS2 << objects->Z()/8107.55245;
                 toFileS2 << h;
                 toFileS2 << " ";
-                toFileS2 << RaDec.first;
+                toFileS2 << objects->X()/8107.55245;
                 toFileS2 << " ";
-                toFileS2 << RaDec.second;
+                toFileS2 << objects->Y()/8107.55245;
                 toFileS2 << " ";
                 toFileS2 << objects->Z()/8107.55245;
                 toFileS2<< " ";

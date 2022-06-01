@@ -47,7 +47,7 @@ std::vector<double> iauS2c(double theta, double phi)
     double cp;
 
     cp = cos(phi);
-    return std::vector<double>({cos(theta) * cp, sin(theta) * cp, sin(phi)});
+    return std::vector<double>({cos(theta) * cp*PI/180., sin(theta) * cp*PI/180., sin(phi)*PI/180.});
 
 }
 
@@ -241,14 +241,14 @@ void initiation(std::vector<StarObject*>&s, Matrix& dXdP){
     double r1 = sqrt(pow(s2V[0], 2)+pow(s2V[1], 2)+pow(s2V[2], 2));
     std::vector<double> finalS2 = S2pv(0.036, 0.0213, sqrt(pow(s2Sph[0], 2)+pow(s2Sph[1], 2)+pow(s2Sph[2], 2)), 0.0385-0.0386, 0.0701-0.0213, r1-r);
 
-   s.push_back(new StarObject(  120.451454,  -22.675722,       -104.524315,      -0.556251   ,      -3.6, 0.0, (14*2*pow(10, 30))));
+   //s.push_back(new StarObject(  120.451454,  -22.675722,       -104.524315,      -0.556251   ,      -3.6, 0.0, (14*2*pow(10, 30))));
 
-    s.push_back(new StarObject(finalS2[0], finalS2[1], finalS2[2], finalS2[3], finalS2[4], 0. , (14*2*pow(10, 30))));
+    //s.push_back(new StarObject(finalS2[0], finalS2[1], finalS2[2], finalS2[3], finalS2[4], finalS2[5] , (14*2*pow(10, 30))));
 
 
-    // s.push_back(new StarObject(  s2[0], s2[1], s2[2],      -0.556251   ,      -3.6, 0.0, (14*2*pow(10, 30))));
+     s.push_back(new StarObject(  s2Sph[0], s2Sph[1], s2Sph[2],      s2V[0]   ,s2V[1], s2V[2], (14*2*pow(10, 30))));
 
-    projection(s[s.size()-1], Omega2, i2);
+    //projection(s[s.size()-1], Omega2, i2);
 
     X = s[s.size()-1]->X();
     Y = s[s.size()-1]->Y();
