@@ -22,8 +22,8 @@ class StarStateInterpolator{
         return counter;
     }
 
-    std::vector<std::pair<std::vector<double>, int>> parseFile(int t, int n){
-        std::vector<std::pair<std::vector<double>, int>>states;
+    std::vector<std::pair<std::vector<double>, double>> parseFile(double t, int n){
+        std::vector<std::pair<std::vector<double>, double>>states;
         std::string tmp;
         std::string tmpNext;
         std::string delims = " ";
@@ -48,7 +48,7 @@ class StarStateInterpolator{
                     stream>>h;
                     tn = h;
                     diff = abs(h-t);
-                    if(diff<=23){
+                    if(diff<=2){
                         std::vector<double>firstPos;
                         std::vector<double>secondPos;
                         for(int i = 1; i < strings.size(); i++){
@@ -99,7 +99,7 @@ class StarStateInterpolator{
                     stream>>h;
                     tn = h;
                     diff = abs(h-t);
-                    if(diff<=23){
+                    if(diff<=2){
                         std::vector<double>firstPos;
                         std::vector<double>secondPos;
                         for(int i = 1; i < strings.size(); i++){
@@ -112,15 +112,15 @@ class StarStateInterpolator{
                         getline(fromFileS38, tmpNext, del);
                         std::istringstream iss1(tmpNext);
                         std::string w1;
-                        while (iss >> w1) strings1.push_back(w1);
+                        while (iss1 >> w1) strings.push_back(w1);
 
-                        std::istringstream stream1(strings1[0]);
+                        std::istringstream stream1(strings[0]);
                         int h1;
-                        stream>>h1;
+                        stream1>>h1;
                         tn1 = h1;
-                        for(int i = 1; i < strings1.size(); i++){
+                        for(int i = 1; i < strings.size(); i++){
                             double value;
-                            std::istringstream str(strings1[i]);
+                            std::istringstream str(strings[i]);
                             str>>value;
                             secondPos.push_back(value);
                         }
@@ -150,7 +150,7 @@ class StarStateInterpolator{
                     stream>>h;
                     tn = h;
                     diff = abs(h-t);
-                    if(diff<=23){
+                    if(diff<=2){
                         std::vector<double>firstPos;
                         std::vector<double>secondPos;
                         for(int i = 1; i < strings.size(); i++){
@@ -163,15 +163,15 @@ class StarStateInterpolator{
                         getline(fromFileS55, tmpNext, del);
                         std::istringstream iss1(tmpNext);
                         std::string w1;
-                        while (iss >> w1) strings1.push_back(w1);
+                        while (iss1 >> w1) strings.push_back(w1);
 
-                        std::istringstream stream1(strings1[0]);
+                        std::istringstream stream1(strings[0]);
                         int h1;
-                        stream>>h1;
+                        stream1>>h1;
                         tn1 = h1;
-                        for(int i = 1; i < strings1.size(); i++){
+                        for(int i = 1; i < strings.size(); i++){
                             double value;
-                            std::istringstream str(strings1[i]);
+                            std::istringstream str(strings[i]);
                             str>>value;
                             secondPos.push_back(value);
                         }
@@ -219,16 +219,18 @@ public:
 
     }
 
-    std::vector<double> interpolation(int t, int StarNum){
 
-        std::vector<std::pair<std::vector<double>, int>> coordinatesS2 = parseFile(t, StarNum);
-        for(int i = 0; i < coordinatesS2.size(); i++){
-            std::cout<<"t"<<i<<" = "<<coordinatesS2[i].second<<" ";
-            for(int j = 0; j < coordinatesS2[i].first.size(); j++){
-                std::cout<<coordinatesS2[i].first[j]<<" ";
-            }
-            std::cout<<std::endl;
-        }
+
+    std::vector<double> interpolation(double t, int StarNum){
+
+        std::vector<std::pair<std::vector<double>, double>> coordinatesS2 = parseFile(t, StarNum);
+//        for(int i = 0; i < coordinatesS2.size(); i++){
+//            std::cout<<"t"<<i<<" = "<<coordinatesS2[i].second<<" ";
+//            for(int j = 0; j < coordinatesS2[i].first.size(); j++){
+//                std::cout<<coordinatesS2[i].first[j]<<" ";
+//            }
+//            std::cout<<std::endl;
+//        }
         Matrix Xt0({{coordinatesS2[0].first[0]}, {coordinatesS2[0].first[1]}, {coordinatesS2[0].first[2]}, {coordinatesS2[0].first[3]}, {coordinatesS2[0].first[4]}, {coordinatesS2[0].first[5]}});
         Matrix Xt1({{coordinatesS2[1].first[0]}, {coordinatesS2[1].first[1]}, {coordinatesS2[1].first[2]},{coordinatesS2[1].first[3]}, {coordinatesS2[1].first[4]}, {coordinatesS2[1].first[5]}});
 
@@ -239,11 +241,11 @@ public:
             result.push_back(X.data[i][0]);
         }
 
-        std::cout<<"t = "<<t<<" ";
-        for(int i = 0; i < result.size(); i++){
-            std::cout<<result[i]<<" ";
-        }
-        return std::vector<double>();
+//        std::cout<<"t = "<<t<<" ";
+//        for(int i = 0; i < result.size(); i++){
+//            std::cout<<result[i]<<" ";
+//        }
+        return result;
     }
 
 
@@ -265,22 +267,116 @@ public:
     }
 
 
-    void addS2Data(StarObject* objects, int h, int n){
+    double norm(double x1, double y1, double z1, double  x2, double y2, double z2){
+        return sqrt(pow((x1-x2), 2)+pow((y1-y2), 2)+pow((z1-z2), 2));
+    }
+
+
+
+    std::pair<double, double> toSpherical(double x, double y, double z){
+
+        double d2 = x*x + y*y;
+
+        double theta = (d2 == 0.0) ? 0.0 : atan2(y, x); //RA
+
+        while ((theta>M_PI) || (theta<-M_PI)){
+            int sign = theta>M_PI ? -1: 1;
+            theta += sign*2*M_PI;
+        }
+        double phi = (z == 0.0) ? 0.0 : atan2(z, sqrt(d2));//DEC
+        return std::pair<double, double>(theta, phi);
+    }
+
+    void addData(StarObject* objects, int h, int n){
+
         switch (n) {
             case 2:
                 toFileS2 << h;
                 toFileS2 << " ";
                 toFileS2 << objects->X()/8107.55245;
                 toFileS2 << " ";
-                toFileS2 << objects->Y() / 8107.55245;
+                toFileS2 << objects->Y()/8107.55245;
                 toFileS2 << " ";
-                toFileS2 << objects->Z() / 8107.55245;
+                toFileS2 << objects->Z()/8107.55245;
                 toFileS2<< " ";
-                toFileS2 << objects->dX()/8107.55245;
+                toFileS2 << objects->dX();
                 toFileS2<< " ";
-                toFileS2 << objects->dY()/8107.55245;
+                toFileS2 << objects->dY();
                 toFileS2<< " ";
-                toFileS2 << objects->dZ()/8107.55245;
+                toFileS2 << objects->dZ();
+                toFileS2 << "\n";
+                break;
+            case 38:
+                toFileS38 << h;
+                toFileS38 << " ";
+                toFileS38 << objects->X();
+                toFileS38 << " ";
+                toFileS38 << objects->Y() ;
+                toFileS38 << " ";
+                toFileS38 << objects->Z();
+                toFileS38 << " ";
+                toFileS38 << objects->dX();
+                toFileS38<< " ";
+                toFileS38 << objects->dY();
+                toFileS38<< " ";
+                toFileS38 << objects->dZ();
+                toFileS38 << "\n";
+                break;
+            case 55:
+                toFileS55 << h;
+                toFileS55 << " ";
+                toFileS55 << objects->X();
+                toFileS55 << " ";
+                toFileS55 << objects->Y();
+                toFileS55 << " ";
+                toFileS55 << objects->Z();
+                toFileS55 << " ";
+                toFileS55 << objects->dX();
+                toFileS55<< " ";
+                toFileS55 << objects->dY();
+                toFileS55<< " ";
+                toFileS55 << objects->dZ();
+                toFileS55 << "\n";
+                break;
+            default:
+                return;
+
+        }
+    }
+
+
+//    double DEC(double x, double y, double z){
+//        return atan(y/x);
+//    }
+//
+//    double RA(double x, double y, double z, double DEC){
+//        double RA;
+//        double r = norm(x, y, z, 0, 0, 0);
+//        if (y/r > 0){
+//            RA = acos( x / r) / cos(DEC);
+//        } else {
+//            RA = 2*M_PI - acos( (x / r) / cos(DEC) );
+//        }
+//        return RA;
+//    }
+    void addS2Data(StarObject* objects, int h, int n){
+
+        std::pair<double, double>RaDec = toSpherical(objects->X(), objects->Y(), objects->Z());
+        switch (n) {
+            case 2:
+                toFileS2 << h;
+                toFileS2 << " ";
+                toFileS2 << RaDec.first;
+                toFileS2 << " ";
+                toFileS2 << RaDec.second;
+                toFileS2 << " ";
+                toFileS2 << objects->Z()/8107.55245;
+                toFileS2<< " ";
+                toFileS2 << objects->dX();
+                toFileS2<< " ";
+                toFileS2 << objects->dY();
+                toFileS2<< " ";
+                toFileS2 << objects->dZ();
                 toFileS2 << "\n";
                 break;
             case 38:
@@ -292,11 +388,11 @@ public:
                 toFileS38 << " ";
                 toFileS38 << objects->Z() / 8107.55245;
                 toFileS38 << " ";
-                toFileS38 << objects->dX()/8107.55245;
+                toFileS38 << objects->dX();
                 toFileS38<< " ";
-                toFileS38 << objects->dY()/8107.55245;
+                toFileS38 << objects->dY();
                 toFileS38<< " ";
-                toFileS38 << objects->dZ()/8107.55245;
+                toFileS38 << objects->dZ();
                 toFileS38 << "\n";
                 break;
             case 55:
@@ -307,12 +403,12 @@ public:
                 toFileS55 << objects->Y() / 8107.55245;
                 toFileS55 << " ";
                 toFileS55 << objects->Z() / 8107.55245;
-                toFileS38 << " ";
-                toFileS55 << objects->dX()/8107.55245;
+                toFileS55 << " ";
+                toFileS55 << objects->dX();
                 toFileS55<< " ";
-                toFileS55 << objects->dY()/8107.55245;
+                toFileS55 << objects->dY();
                 toFileS55<< " ";
-                toFileS55 << objects->dZ()/8107.55245;
+                toFileS55 << objects->dZ();
                 toFileS55 << "\n";
                 break;
             default:
