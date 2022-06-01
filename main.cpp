@@ -16,7 +16,7 @@ double mBlackHole = G*G*4000000;
 const double PI = 4*atan(1.);
 double PointOfMid = 0;
 
-double X, Y, Z;
+double X, Y, Z, dX, dY, dZ;
 double E(double e){
     double M = 0;
     double Z = (e*sin(M))/(sqrt(e*e+1-2*e*cos(M)));
@@ -50,6 +50,32 @@ std::vector<double> iauS2c(double theta, double phi)
     return std::vector<double>({cos(theta) * cp, sin(theta) * cp, sin(phi)});
 
 }
+
+
+
+
+//std::vector<double> S2pv(double theta, double phi, double r, double td, double pd, double rd){
+//    {
+//        double st, ct, sp, cp, rcp, x, y, rpd, w;
+//
+//
+//        st = sin(theta);
+//        ct = cos(theta);
+//        sp = sin(phi);
+//        cp = cos(phi);
+//        rcp = r * cp;
+//        x = rcp * ct;
+//        y = rcp * st;
+//        rpd = r * pd;
+//        w = rpd*sp - cp*rd;
+//
+//        pv[0][0] = x;
+//        pv[0][1] = y;
+//        pv[0][2] = r * sp;
+//        pv[1][0] = -y*td - w*ct;
+//        pv[1][1] =  x*td - w*st;
+//        pv[1][2] = rpd*cp + sp*rd;
+//}
 
 double norm(double x1, double y1, double z1, double  x2, double y2, double z2){
     return sqrt(pow((x1-x2), 2)+pow((y1-y2), 2)+pow((z1-z2), 2));
@@ -208,10 +234,11 @@ void initiation(std::vector<StarObject*>&s, Matrix& dXdP){
     std::vector<double> s2 = convertToDecart(0.126, 0.884, 136.78, 71.36, 234.50);
 
     std::vector<double> s2Sph = iauS2c(0.0386, 0.0213);
+    std::vector<double> s2V = iauS2c(0.0385, 0.0701);
 
    //s.push_back(new StarObject(  120.451454,  -22.675722,       -104.524315,      -0.556251   ,      -3.6, 0.0, (14*2*pow(10, 30))));
 
-    s.push_back(new StarObject(s2Sph[0], s2Sph[1], s2Sph[2],      -0.556251   ,      -3.6, 0.0, (14*2*pow(10, 30))));
+    s.push_back(new StarObject(s2Sph[0], s2Sph[1], s2Sph[2],      0.0701   , 0.0385 , 0 , (14*2*pow(10, 30))));
 
 
     // s.push_back(new StarObject(  s2[0], s2[1], s2[2],      -0.556251   ,      -3.6, 0.0, (14*2*pow(10, 30))));
@@ -221,7 +248,9 @@ void initiation(std::vector<StarObject*>&s, Matrix& dXdP){
     X = s[s.size()-1]->X();
     Y = s[s.size()-1]->Y();
     Z = s[s.size()-1]->Z();
-
+    dX = s[s.size()-1]->dX();
+    dY = s[s.size()-1]->dY();
+    dZ = s[s.size()-1]->dZ();
 
     s.push_back(new StarObject(-22.146914,    207.074722,      15.702321,       -3.191719    ,   0.341359 , 0., 0));
 
@@ -274,7 +303,7 @@ int main(){
    //isohronDerivative.printMatrixdXdP();
     std::cout<<"\n\n\n";
     interp->cleanLast();
-    GaussNewton gaussNewton = GaussNewton(mBlackHole/(G*G), X, Y, Z);
+    GaussNewton gaussNewton = GaussNewton(mBlackHole/(G*G), X, Y, Z, dX, dY, dZ);
     //interp->interpolation(2004.580, 55);
 
    gaussNewton.findBlackHoleMass(interp, isohronDerivative);

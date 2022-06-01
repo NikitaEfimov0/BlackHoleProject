@@ -278,6 +278,11 @@ public:
         double d2 = x*x + y*y;
 
         double theta = (d2 == 0.0) ? 0.0 : atan2(y, x); //RA
+
+        while ((theta>M_PI) || (theta<-M_PI)){
+            int sign = theta>M_PI ? -1: 1;
+            theta += sign*2*M_PI;
+        }
         double phi = (z == 0.0) ? 0.0 : atan2(z, sqrt(d2));//DEC
         return std::pair<double, double>(theta, phi);
     }

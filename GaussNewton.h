@@ -25,15 +25,15 @@ class GaussNewton{
 
     //StarStateInterpolator starStateInterpolator;
 public:
-    GaussNewton(double m, double x, double y, double z){
+    GaussNewton(double m, double x, double y, double z, double dx, double dy, double dz){
 
         BlackHoleMass = m;
         Beta = Matrix({{x},
                        {y},
                        {z},
-                       {-0.556251},
-                       {-3.6},
-                       {0.0},
+                       {dx},
+                       {dy},
+                       {0},
                        {BlackHoleMass}});
     }
 
@@ -62,27 +62,6 @@ public:
                        {dDecdX, dDecdY, dDecdZ, 0, 0, 0}});
     }
 
-    std::pair<double, double> Var(double Dec, double Ra){
-
-        double ra = abs(Ra - (int)Ra);
-        ra = 0.001 * ((int)std::trunc(ra * 1000) % 10);
-        if (ra == 0){
-            ra = 0.0001;
-        } else {
-            ra /= 2;
-        }
-
-        double dec = abs(Dec - (int)Dec);
-        dec = 0.001 * ((int)std::trunc(dec * 1000) % 10);
-
-        if (dec == 0){
-            dec = 0.0001;
-        } else {
-            dec /= 2;
-        }
-
-        return std::pair<double, double>(ra, dec);
-    }
 
     void findBlackHoleMass(StarStateInterpolator *starStateInterpolator, IsohronDerivative isohronDerivative){
         while(true) {
@@ -133,12 +112,12 @@ public:
                 //std::cout << Sra << " " << Sdec << '\n';
             }
 
-            if ((Sra != 0) || (Sdec != 0)) {
+            if ((Sra-prevSRA) != prevSRA/100*0.1 || (Sdec-prevSDEC) != prevSDEC/100*0.1 ) {
                 std::cout << std::endl;
                 std::cout << Sra << " " << Sdec << '\n';
                 std::cout<<Beta.data[6][0]<<"\n";
                 GaussNewtonAlgorithm();
-
+                prevSRA = Sra; prevSDEC = Sdec;
             } else {
                 std::cout << Beta.data[6][0];
                 break;
@@ -325,7 +304,13 @@ public:
     }
 
     std::pair<double, double> ri(std::pair<double, double>y, std::pair<double, double>g){
-        return std::pair<double, double>(y.first-g.first, y.second-g.second);
+
+        double Ra = y.first-g.first;
+        while ((Ra>M_PI) || (Ra<-M_PI)){
+            int sign = Ra>M_PI ? -1: 1;
+            Ra += sign*2*M_PI;
+        }
+        return std::pair<double, double>(Ra, y.second-g.second);
     }
 
     void test(){
