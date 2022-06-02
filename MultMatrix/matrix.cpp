@@ -229,9 +229,10 @@ void Matrix::DebugPrint( void ) {
 		printf( " " );
 
         for ( u32 j = 0; j < m; j++ )
-            std::cout<<data[i][j]<<" ";
+            printf("%.15le ", data[i][j]);
+            //std::cout<<data[i][j]<<" ";
 
-		puts( "" ); // A newline.
+		//puts( "" ); // A newline.
 	}
 }
 

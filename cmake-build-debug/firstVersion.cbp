@@ -106,6 +106,9 @@
 		<Unit filename="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/StarStateInterpolator.h">
 			<Option target="firstVersion"/>
 		</Unit>
+		<Unit filename="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/TmpStarObject.h">
+			<Option target="firstVersion"/>
+		</Unit>
 		<Unit filename="/Users/ddomingo/Desktop/DarkHoleProject/firstVersion/main.cpp">
 			<Option target="firstVersion"/>
 		</Unit>

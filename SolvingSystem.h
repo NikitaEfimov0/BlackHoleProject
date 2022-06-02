@@ -22,6 +22,7 @@
 class SolvingSystem{
     const double G = 0.01720209895;
     double mBlackHole = G*G;
+    double mBlackHole1 = G*G*4000000;
     const double PI = 4*atan(1.);
     double PointOfMid = 0;
 public:
@@ -58,9 +59,9 @@ public:
         Xdot[0] = X[3];
         Xdot[1] = X[4];
         Xdot[2] = X[5];
-        Xdot[3] =- X[0]*((mBlackHole)/(pow(norm(X[0], X[1], X[2], 0, 0, 0), 3)));
-        Xdot[4] =- X[1]*((mBlackHole)/(pow(norm(X[0], X[1], X[2], 0, 0, 0), 3)));
-        Xdot[5] =- X[2]*((mBlackHole)/(pow(norm(X[0], X[1], X[2], 0, 0, 0), 3)));
+        Xdot[3] =- X[0]*((mBlackHole1)/(pow(norm(X[0], X[1], X[2], 0, 0, 0), 3)));
+        Xdot[4] =- X[1]*((mBlackHole1)/(pow(norm(X[0], X[1], X[2], 0, 0, 0), 3)));
+        Xdot[5] =- X[2]*((mBlackHole1)/(pow(norm(X[0], X[1], X[2], 0, 0, 0), 3)));
         Xdot[6] = X[9];
         Xdot[7] = X[10];
         Xdot[8] = X[11];
@@ -74,7 +75,7 @@ public:
         Xdot[16] =- X[13]*((mBlackHole)/(pow(norm(X[12], X[13], X[14], 0, 0, 0), 3)));
         Xdot[17] =- X[14]*((mBlackHole)/(pow(norm(X[12], X[13], X[14], 0, 0, 0), 3)));
 
-        isohronDerivative->updateMatrix(X[0], X[1], X[2], mBlackHole, dXdP, G);
+        isohronDerivative->updateMatrix(Star(X[6], X[7], X[8] ), Star(X[12], X[13], X[14]), mBlackHole, dXdP, G);
         dXdPNew = Matrix(isohronDerivative->dXdPRes);
     }
 
@@ -131,7 +132,7 @@ public:
             tmp.push_back(0);
         }
         std::vector<double>k1, k2, k3, k4;
-        Matrix kM1 = Matrix(7, 6), kM2= Matrix(7, 6), kM3= Matrix(7, 6), kM4= Matrix(7, 6), tmpM = Matrix(7, 6);
+        Matrix kM1 = Matrix(13, 12), kM2= Matrix(13, 12), kM3= Matrix(13, 12), kM4= Matrix(13, 12), tmpM = Matrix(13, 12);
         derivative(system, k1, isohronDerivative, kM1, dXdP);
         set_tmp(tmp, system, k1, h, dXdP, kM1, tmpM);
         derivative(tmp, k2, isohronDerivative, kM2, kM1);
@@ -189,36 +190,45 @@ public:
     void initiation(std::vector<StarObject*>&s, Matrix &B, Matrix& dXdP){
         double Omega2 = (240.50*PI)/180, Omega55 = (129.9*PI)/180, Omega38 = (101.8*PI)/180;
         double i2 = (136.78*PI)/180, i38 = (166.22*PI)/180, i55 = (141.7*PI)/180;
-        mBlackHole*=B.data[6][0];
+        mBlackHole*=B.data[12][0];
         dXdP = Matrix({
-                              {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,   0.0f},
-                              {0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,   0.0f},
-                              {0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,   0.0f},
-                              {0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,   0.0f},
-                              {0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,   0.0f},
-                              {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,   0.0f}});
+                              {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,  0.0f},
+                              {0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,  0.0f},
+                              {0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,  0.0f},
+                              {0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,  0.0f},
+                              {0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,  0.0f},
+                              {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,  0.0f},
+                              {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,  0.0f},
+                              {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,  0.0f},
+                              {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,  0.0f},
+                              {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,  0.0f},
+                              {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,  0.0f},
+                              {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,  0.0f}});
 
 
-        s.push_back(new StarObject(  B.data[0][0], B.data[1][0], B.data[2][0], B.data[3][0], B.data[4][0], B.data[5][0], 0));
-        //s.push_back(new StarObject(120.451454,  -22.675722,       -104.524315,      -0.556251   ,      -3.6, 0.0, 0));
-        StarObject* s2 = s[s.size()-1];
-        i2 = acos((s2->X()*s2->X()+s2->Y()*s2->Y())/((norm(s2->X(), s2->Y(), s2->Z(), 0, 0, 0)*sqrt(s2->X()*s2->X()+s2->Y()*s2->Y()))));
+        //s.push_back(new StarObject(  B.data[0][0], B.data[1][0], B.data[2][0], B.data[3][0], B.data[4][0], B.data[5][0], 0));
+        s.push_back(new StarObject(120.451454,  -22.675722,       -104.524315,      -0.556251   ,      -3.6, 0.0, 0));
+        //StarObject* s2 = s[s.size()-1];
+//        i2 = acos((s2->X()*s2->X()+s2->Y()*s2->Y())/((norm(s2->X(), s2->Y(), s2->Z(), 0, 0, 0)*sqrt(s2->X()*s2->X()+s2->Y()*s2->Y()))));
+//
+//        Matrix h = vecMult(s2->X(), s2->Y(), s2->Z(), s2->dX(), s2->dY(), s2->dZ());
+//        Matrix n = Matrix({{-h.data[1][0], h.data[0][0], 0}});
+//        if(n.data[0][1]>=0){
+//            Omega2 = acos(n.data[0][0]/ norm(n.data[0][0], n.data[0][1], n.data[0][2], 0, 0, 0));
+//        }
+//        else{
+//            Omega2 = 2*PI - acos(n.data[0][0]/ norm(n.data[0][0], n.data[0][1], n.data[0][2], 0, 0, 0));
+//        }
 
-        Matrix h = vecMult(s2->X(), s2->Y(), s2->Z(), s2->dX(), s2->dY(), s2->dZ());
-        Matrix n = Matrix({{-h.data[1][0], h.data[0][0], 0}});
-        if(n.data[0][1]>=0){
-            Omega2 = acos(n.data[0][0]/ norm(n.data[0][0], n.data[0][1], n.data[0][2], 0, 0, 0));
-        }
-        else{
-            Omega2 = 2*PI - acos(n.data[0][0]/ norm(n.data[0][0], n.data[0][1], n.data[0][2], 0, 0, 0));
-        }
+        projection(s[s.size()-1], Omega2, i2);
 
-        //projection(s[s.size()-1], Omega2, i2);
+        //s.push_back(new StarObject(  B.data[0][0], B.data[1][0], B.data[2][0], B.data[3][0], B.data[4][0], B.data[5][0], 0));
 
         s.push_back(new StarObject(-22.146914,    207.074722,      15.702321,       -3.191719    ,   0.341359 , 0., 0));
 
         projection(s[s.size()-1], Omega38, i38);
 
+        //s.push_back(new StarObject(  B.data[6][0], B.data[7][0], B.data[8][0], B.data[9][0], B.data[10][0], B.data[11][0], 0));
         s.push_back(new StarObject(204.046539,   45.089123,      100.784233,      0.642879   ,     2.909287   ,    0.000000, 0));
         projection(s[s.size()-1], Omega55, i55);
     }
@@ -227,7 +237,7 @@ public:
     void start(Matrix &B){
         IsohronDerivative isohronDerivative = IsohronDerivative();
         std::vector<StarObject*> system;
-        Matrix dXdP = Matrix(7, 6);
+        Matrix dXdP = Matrix(13, 12);
         initiation(system, B, dXdP);
 
         StarStateInterpolator* interp = new StarStateInterpolator();

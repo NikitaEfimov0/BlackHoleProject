@@ -394,6 +394,13 @@ public:
                 toFileS38 << objects->Y() / 8107.55245;
                 toFileS38 << " ";
                 toFileS38 << objects->Z() / 8107.55245;
+//                toFileS38 << h;
+//                toFileS38 << " ";
+//                toFileS38 << RaDec.first;
+//                toFileS38 << " ";
+//                toFileS38 << RaDec.second;
+//                toFileS38<< " ";
+//                toFileS38 << objects->Z()/8107.55245;
                 toFileS38 << " ";
                 toFileS38 << objects->dX();
                 toFileS38<< " ";
@@ -410,6 +417,13 @@ public:
                 toFileS55 << objects->Y() / 8107.55245;
                 toFileS55 << " ";
                 toFileS55 << objects->Z() / 8107.55245;
+//                toFileS55 << h;
+//                toFileS55 << " ";
+//                toFileS55 << RaDec.first;
+//                toFileS55 << " ";
+//                toFileS55 << RaDec.second;
+//                toFileS55 << " ";
+//                toFileS55 << objects->Z()/8107.55245;
                 toFileS55 << " ";
                 toFileS55 << objects->dX();
                 toFileS55<< " ";

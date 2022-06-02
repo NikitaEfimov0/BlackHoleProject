@@ -5,10 +5,11 @@
 #ifndef FIRSTVERSION_ISOHRONDERIVATIVE_H
 #define FIRSTVERSION_ISOHRONDERIVATIVE_H
 #include "MultMatrix/matrix.hpp"
+#include "TmpStarObject.h"
 class IsohronDerivative{
     std::vector<std::pair<int, Matrix>>allDeriv;
 public:
-    Matrix dXdPRes = Matrix(6, 7);
+    Matrix dXdPRes = Matrix(12, 7);
     double dvxdm(double x, double y, double z, double m) {
         return (-x*m*m)/(pow(sqrt(x*x+y*y+z*z), 3));
     }
@@ -21,26 +22,38 @@ public:
         return (-z*m*m)/(pow(sqrt(x*x+y*y+z*z), 3));;
     }
 
-    void updateMatrix(double x, double y, double z, double m, Matrix dXdP, double G){
+    void updateMatrix(Star s38, Star s55,  double m, Matrix dXdP, double G){
 
-        Matrix dFdGm = Matrix({{0, 0, 0, 0, 0, 0, 0},
-                               {0, 0, 0, 0, 0, 0, 0},
-                               {0, 0, 0, 0, 0, 0, 0},
-                               {0, 0, 0, 0, 0, 0, dvxdm(x, y, z, G)},
-                               {0, 0, 0, 0, 0, 0, dvydm(x, y, z, G)},
-                               {0, 0, 0, 0, 0, 0, dvzdm(x, y, z, G)}});
+        Matrix dFdGm = Matrix({{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                               {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                               {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                               {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                               {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                               {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                               {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,dvxdm(s38.x, s38.y, s38.z, G)},
+                               {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,dvydm(s38.x, s38.y, s38.z, G)},
+                               {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,dvzdm(s38.x, s38.y, s38.z, G)},
+                               {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,dvxdm(s55.x, s55.y, s55.z, G)},
+                               {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,dvydm(s55.x, s55.y, s55.z, G)},
+                               {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,dvzdm(s55.x, s55.y, s55.z, G)}});
 
 
 
 //        dXdP.DebugPrint();
 //        std::cout<<"\n*\n";
         Matrix dFdX = Matrix({
-                {0.0f,                 0.0f,                 0.0f,        1.0f, 0.0f, 0.0f},
-                {0.0f,                 0.0f,                 0.0f,        0.0f, 1.0f, 0.0f},
-                {0.0f,                 0.0f,                 0.0f,        0.0f, 0.0f, 1.0f},
-                {dvxdx(x, y, z, m), dvxdy(x, y, z, m), dvxdz(x, y, z, m), 0.0f, 0.0f, 0.0f},
-                {dvydx(x, y, z, m), dvydy(x, y, z, m), dvydz(x, y, z, m), 0.0f, 0.0f, 0.0f},
-                {dvzdx(x, y, z, m), dvzdy(x, y, z, m), dvzdz(x, y, z, m), 0.0f, 0.0f, 0.0f}});
+                {0.0f,                  0.0f,                 0.0f,  0.0f, 0.0f, 0.0f,       1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
+                {0.0f,                  0.0f,                 0.0f,  0.0f, 0.0f, 0.0f,       0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f},
+                {0.0f,                  0.0f,                 0.0f,  0.0f, 0.0f, 0.0f,       0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f},
+                {0.0f,                  0.0f,                 0.0f,  0.0f, 0.0f, 0.0f,       0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f},
+                {0.0f,                  0.0f,                 0.0f,  0.0f, 0.0f, 0.0f,       0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f},
+                {0.0f,                  0.0f,                 0.0f,  0.0f, 0.0f, 0.0f,       0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f},
+                {dvxdx(s38.x, s38.y, s38.z, m), dvxdy(s38.x, s38.y, s38.z, m), dvxdz(s38.x, s38.y, s38.z, m), dvxdx(s55.x, s55.y, s55.z, m), dvxdy(s55.x, s55.y, s55.z, m), dvxdz(s55.x, s55.y, s55.z, m), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
+                {dvydx(s38.x, s38.y, s38.z, m), dvydy(s38.x, s38.y, s38.z, m), dvydz(s38.x, s38.y, s38.z, m), dvydx(s55.x, s55.y, s55.z, m), dvydy(s55.x, s55.y, s55.z, m), dvydz(s55.x, s55.y, s55.z, m), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
+                {dvzdx(s38.x, s38.y, s38.z, m), dvzdy(s38.x, s38.y, s38.z, m), dvzdz(s38.x, s38.y, s38.z, m), dvzdx(s55.x, s55.y, s55.z, m), dvzdy(s55.x, s55.y, s55.z, m), dvzdz(s55.x, s55.y, s55.z, m), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
+                {dvxdx(s38.x, s38.y, s38.z, m), dvxdy(s38.x, s38.y, s38.z, m), dvxdz(s38.x, s38.y, s38.z, m), dvxdx(s55.x, s55.y, s55.z, m), dvxdy(s55.x, s55.y, s55.z, m), dvxdz(s55.x, s55.y, s55.z, m), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
+                {dvydx(s38.x, s38.y, s38.z, m), dvydy(s38.x, s38.y, s38.z, m), dvydz(s38.x, s38.y, s38.z, m), dvydx(s55.x, s55.y, s55.z, m), dvydy(s55.x, s55.y, s55.z, m), dvydz(s55.x, s55.y, s55.z, m), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
+                {dvzdx(s38.x, s38.y, s38.z, m), dvzdy(s38.x, s38.y, s38.z, m), dvzdz(s38.x, s38.y, s38.z, m), dvzdx(s55.x, s55.y, s55.z, m), dvzdy(s55.x, s55.y, s55.z, m), dvzdz(s55.x, s55.y, s55.z, m), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f}});
 //        dFdX.DebugPrint();
         dXdP = dFdGm+dFdX*dXdP;
 //        std::cout<<"\n=\n";

@@ -11,11 +11,13 @@
 #include "StarStateInterpolator.h"
 #include "IsohronDerivative.h"
 #include "GaussNewton.h"
+#include "TmpStarObject.h"
 const double G = 0.01720209895;
 double mBlackHole = G*G*4000000;
 const double PI = 4*atan(1.);
 double PointOfMid = 0;
 
+Star s38(0, 0, 0), s55(0, 0, 0);
 double X, Y, Z, dX, dY, dZ;
 double E(double e){
     double M = 0;
@@ -86,6 +88,9 @@ double norm(double x1, double y1, double z1, double  x2, double y2, double z2){
 
 void derivative(std::vector<double>X, std::vector<double>&Xdot, IsohronDerivative *isohronDerivative, Matrix& dXdPNew, Matrix &dXdP){
     double m = mBlackHole;
+
+    Star S38(X[6], X[7], X[8]);
+    Star S55(X[12], X[13], X[14]);
     for(int i = 0; i < X.size(); i++){
         Xdot.push_back(0);
     }
@@ -108,7 +113,7 @@ void derivative(std::vector<double>X, std::vector<double>&Xdot, IsohronDerivativ
     Xdot[16] =- X[13]*((mBlackHole)/(pow(norm(X[12], X[13], X[14], 0, 0, 0), 3)));
     Xdot[17] =- X[14]*((mBlackHole)/(pow(norm(X[12], X[13], X[14], 0, 0, 0), 3)));
 
-    isohronDerivative->updateMatrix(X[0], X[1], X[2], mBlackHole, dXdP, G);
+    isohronDerivative->updateMatrix(S38,S55, mBlackHole, dXdP, G);
     dXdPNew = Matrix(isohronDerivative->dXdPRes);
 }
 
@@ -165,7 +170,7 @@ std::vector<double>system;
         tmp.push_back(0);
     }
     std::vector<double>k1, k2, k3, k4;
-    Matrix kM1 = Matrix(7, 6), kM2= Matrix(7, 6), kM3= Matrix(7, 6), kM4= Matrix(7, 6), tmpM = Matrix(7, 6);
+    Matrix kM1 = Matrix(13, 12), kM2= Matrix(13, 12), kM3= Matrix(13, 12), kM4= Matrix(13, 12), tmpM = Matrix(13, 12);
     derivative(system, k1, isohronDerivative, kM1, dXdP);
     set_tmp(tmp, system, k1, h, dXdP, kM1, tmpM);
     derivative(tmp, k2, isohronDerivative, kM2, kM1);
@@ -225,12 +230,18 @@ void initiation(std::vector<StarObject*>&s, Matrix& dXdP){
     double i2 = (136.78*PI)/180, i38 = (166.22*PI)/180, i55 = (141.7*PI)/180;
 
     dXdP = Matrix({
-        {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,   0.0f},
-        {0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,   0.0f},
-        {0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,   0.0f},
-        {0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,   0.0f},
-        {0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,   0.0f},
-        {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,   0.0f}});
+        {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,  0.0f},
+        {0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,  0.0f},
+        {0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,  0.0f},
+        {0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,  0.0f},
+        {0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,  0.0f},
+        {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,  0.0f},
+        {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,  0.0f},
+        {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,  0.0f},
+        {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,  0.0f},
+        {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,  0.0f},
+        {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,  0.0f},
+        {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,  0.0f}});
 
 
     std::vector<double> s2 = convertToDecart(0.126, 0.884, 136.78, 71.36, 234.50);
@@ -241,28 +252,51 @@ void initiation(std::vector<StarObject*>&s, Matrix& dXdP){
     double r1 = sqrt(pow(s2V[0], 2)+pow(s2V[1], 2)+pow(s2V[2], 2));
     std::vector<double> finalS2 = S2pv(0.036, 0.0213, sqrt(pow(s2Sph[0], 2)+pow(s2Sph[1], 2)+pow(s2Sph[2], 2)), 0.0385-0.0386, 0.0701-0.0213, r1-r);
 
-   //s.push_back(new StarObject(  120.451454,  -22.675722,       -104.524315,      -0.556251   ,      -3.6, 0.0, (14*2*pow(10, 30))));
+   s.push_back(new StarObject(  120.451454,  -22.675722,       -104.524315,      -0.556251   ,      -3.6, 0.0, (14*2*pow(10, 30))));
 
     //s.push_back(new StarObject(finalS2[0], finalS2[1], finalS2[2], finalS2[3], finalS2[4], finalS2[5] , (14*2*pow(10, 30))));
 
 
-     s.push_back(new StarObject(  s2Sph[0], s2Sph[1], s2Sph[2],      s2V[0]   ,s2V[1], s2V[2], (14*2*pow(10, 30))));
+     //s.push_back(new StarObject(  s2Sph[0], s2Sph[1], s2Sph[2],      s2V[0]   ,s2V[1], s2V[2], (14*2*pow(10, 30))));
 
-    //projection(s[s.size()-1], Omega2, i2);
+    projection(s[s.size()-1], Omega2, i2);
 
-    X = s[s.size()-1]->X();
-    Y = s[s.size()-1]->Y();
-    Z = s[s.size()-1]->Z();
-    dX = s[s.size()-1]->dX();
-    dY = s[s.size()-1]->dY();
-    dZ = s[s.size()-1]->dZ();
+//    X = s[s.size()-1]->X();
+//    Y = s[s.size()-1]->Y();
+//    Z = s[s.size()-1]->Z();
+//    dX = s[s.size()-1]->dX();
+//    dY = s[s.size()-1]->dY();
+//    dZ = s[s.size()-1]->dZ();
+
+    s2Sph = iauS2c(-0.0667, 0.0576);
+    s2V = iauS2c(-0.0673, 0.0690);
+
 
     s.push_back(new StarObject(-22.146914,    207.074722,      15.702321,       -3.191719    ,   0.341359 , 0., 0));
 
+    s38.x = s2Sph[0];
+    s38.y = s2Sph[1];
+    s38.z = s2Sph[2];
+    s38.dx = s2V[0];
+    s38.dy = s2V[1];
+    s38.dz= s2V[2];
+
     projection(s[s.size()-1], Omega38, i38);
 
+
+    s2Sph = iauS2c(0.0549, -0.1552);
+    s2V = iauS2c(0.0711, -0.1536);
     s.push_back(new StarObject(204.046539,   45.089123,      100.784233,      0.642879   ,     2.909287   ,    0.000000, 0));
+    s55.x = s2Sph[0];
+    s55.y = s2Sph[1];
+    s55.z = s2Sph[2];
+    s55.dx = s2V[0];
+    s55.dy = s2V[1];
+    s55.dz= s2V[2];
     projection(s[s.size()-1], Omega55, i55);
+
+
+
 }
 
 
@@ -275,7 +309,7 @@ void initiation(std::vector<StarObject*>&s, Matrix& dXdP){
 
 int main(){
     IsohronDerivative isohronDerivative = IsohronDerivative();
-    Matrix dXdP = Matrix(7, 6);
+    Matrix dXdP = Matrix(13, 12);
     std::vector<StarObject*> system;
     initiation(system, dXdP);
     sf::Clock loop_timer;
@@ -306,9 +340,9 @@ int main(){
 
     }
    //isohronDerivative.printMatrixdXdP();
-    std::cout<<"\n\n\n";
+    //std::cout<<"\n\n\n";
     interp->cleanLast();
-    GaussNewton gaussNewton = GaussNewton(mBlackHole/(G*G), X, Y, Z, dX, dY, dZ);
+    GaussNewton gaussNewton = GaussNewton(mBlackHole / (G * G), s38, s55);
     //interp->interpolation(2004.580, 55);
 
    gaussNewton.findBlackHoleMass(interp, isohronDerivative);
